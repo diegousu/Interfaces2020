@@ -19,6 +19,7 @@ document.querySelector("#herramienta").addEventListener("change", cambiarherrami
 ancho.addEventListener("change", updateCanvas);
 alto.addEventListener("change", updateCanvas);
 document.querySelector("#filtro").addEventListener("change",setFiltro);
+document.querySelector("#parametro").addEventListener("change",setFiltro);
 document.querySelector("#aplicar").addEventListener("click",aplicar);
 
 
@@ -39,12 +40,13 @@ canvas.addEventListener('mousemove', function(e) {
 
 canvas.addEventListener('mouseup', function() {
     canvas.removeEventListener('mousemove', pintando, false);
-}, false);
+    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
+    }, false);
  
 let pintando = function() {
     ctx.lineTo(posmouse.x, posmouse.y);
     ctx.stroke();
-    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
+    
 };
 
 document.querySelector("#nuevo").addEventListener("click", canvasBlanco);
@@ -99,14 +101,17 @@ input.onchange = e => {
             canvas.width=this.width;
             canvas.height=this.height;
             ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+            imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
             ancho.value=this.width;
             alto.value=this.height;
         }
     }
 }
 function updateCanvas(){
+
     canvas.height=alto.value;
     canvas.width=ancho.value;
+    ctx.putImageData(imgBack,0,0);
 }
 function download(){
     let download = document.getElementById("download");
@@ -125,7 +130,10 @@ function setFiltro(){
         goNegative();
     if (filtro=="sepia")
         goSepia();
-    
+    if (filtro=="saturacion")
+        goSaturation();
+    let slider= document.querySelector("#parametro");
+    document.querySelector("#valorparam").innerHTML=Math.round(slider.value*100)+"%";
 }
 
 function goNegative(){
@@ -173,6 +181,29 @@ function goSepia(){
     aplicoFiltro=true;
 }
 
+function goSaturation(){
+    if (aplicoFiltro)
+        ctx.putImageData(imgBack,0,0);
+    else{
+        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
+    }
+    let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+     for (y=0;y<canvas.height;y++){
+        for (x=0;x<canvas.width;x++){
+            index=(x+y*imageData.width)*4;
+            let hsl=rgb2hsl(imageData.data[index+0],imageData.data[index+1],imageData.data[index+2]);
+            hsl[1]=document.querySelector("#parametro").value*100;
+            let nuevoRGB=hslToRgb(hsl[0],hsl[1]/100,hsl[2]/100);
+            imageData.data[index+0]=nuevoRGB[0];
+            imageData.data[index+1]=nuevoRGB[1];
+            imageData.data[index+2]=nuevoRGB[2];
+        }
+     }
+    ctx.putImageData(imageData,0,0);
+    aplicoFiltro=true;
+
+}
+
 function limpiarFiltro(){
     ctx.putImageData(imgBack,0,0);
 }
@@ -182,3 +213,60 @@ function aplicar(){
     aplicoFiltro=false;
     filtro.value="ninguno";
 }
+
+
+
+
+
+
+//HELPERS
+
+function rgb2hsl(r, g, b){
+    r /= 255, g /= 255, b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if(max == min){
+        h = s = 0; // achromatic
+    }else{
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [Math.floor(h * 360), Math.floor(s * 100), Math.floor(l * 100)];
+}
+
+function hslToRgb (h, s, l) {
+    // Achromatic
+    if (s === 0) return [l, l, l]
+    h /= 360
+  
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s
+    var p = 2 * l - q
+  
+    return [
+      Math.round(hueToRgb(p, q, h + 1/3) * 255),
+      Math.round(hueToRgb(p, q, h) * 255),
+      Math.round(hueToRgb(p, q, h - 1/3) * 255)
+    ]
+  }
+  
+  /**
+   * Helpers
+   */
+  
+  function hueToRgb (p, q, t) {
+    if (t < 0) t += 1
+    if (t > 1) t -= 1
+    if (t < 1/6) return p + (q - p) * 6 * t
+    if (t < 1/2) return q
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6
+  
+    return p
+  }
