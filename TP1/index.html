@@ -16,6 +16,9 @@
 
 <body>
     <button id="nuevo">Nuevo</button>
+    <input class="input1" type="file" accept="image/*" style="display: none;">
+    <button onclick="document.querySelector('.input1').click();">Abrir imagen</button>
+    <a id="download" download="dibujo.png"><button type="button" onClick="download()">Descargar</button></a>
     <div>
         <p>Herramientas</p>
         <select id="herramienta">
@@ -32,18 +35,23 @@
             </div>
             <p>Preview:</p><canvas id="canvasito" width="80" height="80"></canvas>
         </div>
+        <p>Tamaño de lienzo</p>
+        <input type="number" value="800" step="1" min="1" max="2048" id="ancho">x
+        <input type="number" value="600" step="1" min="1" max="2048" id="alto">
     </div>
-    <div>
-        <p>Filtros</p>
-        <button>Filtro 1</button>
-        <button>Filtro 2</button>
-        <button>Filtro 3</button>
-        <button>Filtro 4</button>
-    </div>
+
     <div id="lienzo">
         <canvas id="canvas" style="border:#000 solid 1px;" width="800" height="600"></canvas>
     </div>
-    <p id="pos"></p>
+    <div>
+        <p>Filtros</p>
+        <select id="filtro">
+            <option value="ninguno">Ninguno</option>
+            <option value="negativo">Negativo</option>
+            <option value="sepia">Sepia</option>
+          </select>
+          <button id="aplicar">Aplicar Filtro</button>
+    </div>
 </body>
 <script src="js/main.js"></script>
 </html>
