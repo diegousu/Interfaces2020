@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proto Paint</title>
+</head>
+<style>
+    #canvas{
+        cursor:crosshair;
+    }
+    #container{
+        display: flex;
+    }
+</style>
+
+<body>
+    <button id="nuevo">Nuevo</button>
+    <div>
+        <p>Herramientas</p>
+        <select id="herramienta">
+            <option value="pincel">Pincel</option>
+            <option value="goma">Borrador</option>
+          </select>
+        <div id="container">
+            <div>
+                <p>Tamaño: </p><input type="range" min="1" max="50" value="10" class="slider" id="tamaño">
+            </div>
+            <div>
+                <p>Color: </p>
+                <input type="color" id="html5colorpicker" value="#000000">
+            </div>
+            <p>Preview:</p><canvas id="canvasito" width="80" height="80"></canvas>
+        </div>
+    </div>
+    <div>
+        <p>Filtros</p>
+        <button>Filtro 1</button>
+        <button>Filtro 2</button>
+        <button>Filtro 3</button>
+        <button>Filtro 4</button>
+    </div>
+    <div id="lienzo">
+        <canvas id="canvas" style="border:#000 solid 1px;" width="800" height="600"></canvas>
+    </div>
+    <p id="pos"></p>
+</body>
+<script src="js/main.js"></script>
+</html>
