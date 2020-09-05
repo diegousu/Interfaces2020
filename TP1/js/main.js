@@ -7,6 +7,7 @@ let input = document.querySelector('.input1');
 let ancho=document.querySelector("#ancho");
 let alto=document.querySelector("#alto");
 let imgBack; let aplicoFiltro=false;
+let herramienta="pincel";
 actualizarCanvasito();
 canvasBlanco();
 
@@ -20,7 +21,7 @@ ancho.addEventListener("change", updateCanvas);
 alto.addEventListener("change", updateCanvas);
 document.querySelector("#filtro").addEventListener("change",setFiltro);
 document.querySelector("#parametro").addEventListener("change",setFiltro);
-document.querySelector("#aplicar").addEventListener("click",aplicar);
+document.querySelector("#aplicar").addEventListener("click",aplicarFiltro);
 
 
 canvas.addEventListener('mousemove', function(e) {
@@ -28,14 +29,21 @@ canvas.addEventListener('mousemove', function(e) {
     posmouse.y = e.pageY - this.offsetTop;
   }, false);
 
-  canvas.addEventListener('mousedown', function(e) {
+canvas.addEventListener('mousedown', function(e) {
     ctx.beginPath();
     canvas.addEventListener('mousemove', pintando, false);
     ctx.moveTo(posmouse.x, posmouse.y);
     ctx.lineWidth = document.querySelector("#tamaño").value;
-    ctx.lineJoin = 'bevel';
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = document.querySelector("#html5colorpicker").value;
+    if (herramienta=="pincel"){
+        ctx.lineJoin = 'bevel';
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = document.querySelector("#html5colorpicker").value;
+    }
+    if (herramienta=="borrador"){
+        ctx.lineJoin = 'bevel';
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = "white";
+    }
 }, false);
 
 canvas.addEventListener('mouseup', function() {
@@ -65,7 +73,7 @@ function getCoords(){
 }
 
 function cambiarherramienta(){
-
+    herramienta=document.querySelector("#herramienta").value;
 }
 
 
@@ -107,12 +115,15 @@ input.onchange = e => {
         }
     }
 }
-function updateCanvas(){
 
+//resize
+function updateCanvas(){
     canvas.height=alto.value;
     canvas.width=ancho.value;
     ctx.putImageData(imgBack,0,0);
 }
+
+
 function download(){
     let download = document.getElementById("download");
     let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -132,6 +143,8 @@ function setFiltro(){
         goSepia();
     if (filtro=="saturacion")
         goSaturation();
+    if (filtro=="brillo")
+        cambiarBrillo();
     let slider= document.querySelector("#parametro");
     document.querySelector("#valorparam").innerHTML=Math.round(slider.value*100)+"%";
 }
@@ -188,12 +201,13 @@ function goSaturation(){
         imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
     }
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let param=document.querySelector("#parametro").value*1.0;
      for (y=0;y<canvas.height;y++){
         for (x=0;x<canvas.width;x++){
             index=(x+y*imageData.width)*4;
-            let hsl=rgb2hsl(imageData.data[index+0],imageData.data[index+1],imageData.data[index+2]);
-            hsl[1]=document.querySelector("#parametro").value*100;
-            let nuevoRGB=hslToRgb(hsl[0],hsl[1]/100,hsl[2]/100);
+            let hsl=rgbToHsl(imageData.data[index+0],imageData.data[index+1],imageData.data[index+2]);
+            hsl[1]=param;
+            let nuevoRGB=hslToRgb(hsl[0],hsl[1],hsl[2]);
             imageData.data[index+0]=nuevoRGB[0];
             imageData.data[index+1]=nuevoRGB[1];
             imageData.data[index+2]=nuevoRGB[2];
@@ -201,46 +215,41 @@ function goSaturation(){
      }
     ctx.putImageData(imageData,0,0);
     aplicoFiltro=true;
-
 }
 
 function limpiarFiltro(){
     ctx.putImageData(imgBack,0,0);
 }
 
-function aplicar(){
+function aplicarFiltro(){
     imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);
     aplicoFiltro=false;
     filtro.value="ninguno";
 }
 
-
-
-
+function cambiarBrillo(){
+    if (aplicoFiltro)
+        ctx.putImageData(imgBack,0,0);
+    else{
+        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
+    }
+    let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let param=document.querySelector("#parametro").value*1.0*256-128;//lineal
+    for (y=0;y<canvas.height;y++){
+        for (x=0;x<canvas.width;x++){
+            index=(x+y*imageData.width)*4;
+            imageData.data[index+0]=trunc(param+imageData.data[index+0]);
+            imageData.data[index+1]=trunc(param+imageData.data[index+1]);
+            imageData.data[index+2]=trunc(param+imageData.data[index+2]);
+        }
+    }
+    ctx.putImageData(imageData,0,0);
+    aplicoFiltro=true;
+}
 
 
 //HELPERS
 
-function rgb2hsl(r, g, b){
-    r /= 255, g /= 255, b /= 255;
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
-
-    if(max == min){
-        h = s = 0; // achromatic
-    }else{
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch(max){
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
-    }
-
-    return [Math.floor(h * 360), Math.floor(s * 100), Math.floor(l * 100)];
-}
 
 function hslToRgb (h, s, l) {
     // Achromatic
@@ -257,10 +266,6 @@ function hslToRgb (h, s, l) {
     ]
   }
   
-  /**
-   * Helpers
-   */
-  
   function hueToRgb (p, q, t) {
     if (t < 0) t += 1
     if (t > 1) t -= 1
@@ -270,3 +275,32 @@ function hslToRgb (h, s, l) {
   
     return p
   }
+
+  function trunc(value){
+      if (value<0)
+        return 0;
+      if (value>255)
+        return 255;
+      else return value;
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255, g /= 255, b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if(max == min){
+        h = s = 0; // achromatic
+    } else {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d ; break;
+            case g: h = 2 + ( (b - r) / d); break;
+            case b: h = 4 + ( (r - g) / d); break;
+        }
+        h*=60;
+        if (h < 0) h +=360;
+    }
+   return([h, s, l]);
+}  
