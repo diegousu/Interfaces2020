@@ -16,7 +16,6 @@ canvasBlanco();
 document.querySelector("#tamaño").addEventListener("change",actualizarCanvasito);
 document.querySelector("#html5colorpicker").addEventListener("change",actualizarCanvasito);
 
-document.querySelector("#herramienta").addEventListener("change", cambiarherramienta);
 ancho.addEventListener("change", updateCanvas);
 alto.addEventListener("change", updateCanvas);
 document.querySelector("#filtro").addEventListener("change",setFiltro);
@@ -30,6 +29,7 @@ canvas.addEventListener('mousemove', function(e) {
   }, false);
 
 canvas.addEventListener('mousedown', function(e) {
+    cambiarherramienta();
     ctx.beginPath();
     canvas.addEventListener('mousemove', pintando, false);
     ctx.moveTo(posmouse.x, posmouse.y);
@@ -114,6 +114,7 @@ input.onchange = e => {
             alto.value=this.height;
         }
     }
+    document.querySelector("#filtro").value="Ninguno";
 }
 
 //resize
@@ -135,16 +136,35 @@ function download(){
 
 function setFiltro(){
     let filtro=document.querySelector("#filtro").value;
-    if (filtro=="ninguno")
+    let desc="";
+    if (filtro=="ninguno"){
         limpiarFiltro();
-    if (filtro=="negativo")
+    }
+    if (filtro=="negativo"){
         goNegative();
-    if (filtro=="sepia")
+        desc="Invierte los colores de la imagen";
+    }
+    if (filtro=="sepia"){
         goSepia();
-    if (filtro=="saturacion")
+        desc="Genera tonos sepia en base a la escala de grises de la imagen";
+    }
+    if (filtro=="saturacion"){
         goSaturation();
-    if (filtro=="brillo")
+        desc="Convierte la información RGB a HSL y aumenta la saturación </br> en proporción al parámetro seleccionado";
+    }
+    if (filtro=="brillo"){
         cambiarBrillo();
+        desc="Aumenta el brillo de cada canal en proporción </br> al parámetro seleccionado";
+    }
+    if (filtro=="binarizacion"){
+        goBinary();
+        desc="El parámetro funciona como umbral a partir del cual </br>el pixel toma el valor del color elegido</br> o negro en caso de no superarlo.";
+    }
+    if (filtro=="sobel"){
+        goSobel();
+        //desc="El parámetro funciona como umbral a partir del cual </br>el pixel toma el valor del color elegido</br> o negro en caso de no superarlo.";
+    }
+    document.querySelector("#descripcion").innerHTML=desc;
     let slider= document.querySelector("#parametro");
     document.querySelector("#valorparam").innerHTML=Math.round(slider.value*100)+"%";
 }
@@ -190,7 +210,7 @@ function goSepia(){
                   imageData.data[index + 2] = newBlue;
               }
       }
-          ctx.putImageData(imageData, 0, 0);
+    ctx.putImageData(imageData, 0, 0);
     aplicoFiltro=true;
 }
 
@@ -201,7 +221,7 @@ function goSaturation(){
         imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
     }
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
-    let param=document.querySelector("#parametro").value*1.0;
+    let param=document.querySelector("#parametro").value*1.0+0.01;
      for (y=0;y<canvas.height;y++){
         for (x=0;x<canvas.width;x++){
             index=(x+y*imageData.width)*4;
@@ -246,6 +266,89 @@ function cambiarBrillo(){
     ctx.putImageData(imageData,0,0);
     aplicoFiltro=true;
 }
+
+function goBinary(){
+    if (aplicoFiltro)
+        ctx.putImageData(imgBack,0,0);
+    else{
+        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
+    }
+    let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let param=document.querySelector("#parametro").value*1.0*255;
+    let colori=document.querySelector("#html5colorpicker").value.slice(1,7);
+    let color=hexToRgb(colori);
+    for (y=0;y<canvas.height;y++){
+        for (x=0;x<canvas.width;x++){
+            index=(x+y*imageData.width)*4;
+            let promedio=(imageData.data[index+0]+imageData.data[index+1]+imageData.data[index+2])/3;
+            if (promedio>=param){
+                imageData.data[index+0]=color.r;
+                imageData.data[index+1]=color.g;
+                imageData.data[index+2]=color.b;
+            }
+            else{
+                imageData.data[index+0]=0;
+                imageData.data[index+1]=0;
+                imageData.data[index+2]=0;
+            }
+        }
+    }
+    ctx.putImageData(imageData,0,0);
+    aplicoFiltro=true;
+}
+
+function goSobel(){
+    let kernel=[[1,1,1],[1,1,1],[1,1,1]];
+    if (aplicoFiltro)
+        ctx.putImageData(imgBack,0,0);
+    else{
+        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
+    }
+    let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let result=imageData; let vecinos;
+    for (y=0;y<canvas.height;y++){
+        for (x=0;x<canvas.width;x++){
+            index=(x+y*imageData.width)*4;
+            vecinos=getVecinos(imageData,x,y);
+            let valorR=0; let valorG=0; let valorB=0;
+            for (let i = 0; i <=2; i++) {
+                for (let j = 0; j <=0; j++) {
+                    valorR+=vecinos[i][j].data[0]*kernel[j][i];
+                    valorG+=vecinos[i][j].data[1]*kernel[j][i];
+                    valorB+=vecinos[i][j].data[2]*kernel[j][i];
+                }
+            }
+            result.data[index]=valorR;
+            result.data[index+1]=valorG;
+            result.data[index+2]=valorB;
+        }
+    }
+    ctx.putImageData(result,0,0);
+    aplicoFiltro=true;
+}
+
+
+//SOBEL
+
+function getVecinos(imageData, x,y){
+    let result=new Array(3);
+    for (let a = 0; a < result.length; a++)
+        result[a]=new Array(3);
+    let pixel;
+    let outofbounds={data:[0,0,0]};
+    let index=(x+y*imageData.width)*4;
+    for (let i = -1; i <=1; i++) {
+        for (let j = -1; j <=1; j++) {
+            if (x+i>=0 && y+j>=0 && x+i<=imageData.width && y+j<=imageData.height)
+                pixel={data:[imageData.data[index+0],imageData.data[index+1],imageData.data[index+2]]};
+            else pixel=outofbounds;
+            result[i+1][j+1]=pixel;
+        }
+    }
+    return result;
+}
+    
+
 
 
 //HELPERS
@@ -303,4 +406,13 @@ function hslToRgb (h, s, l) {
         if (h < 0) h +=360;
     }
    return([h, s, l]);
-}  
+} 
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }

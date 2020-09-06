@@ -3,26 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proto Paint</title>
+    <title>Croto-Paint</title>
 </head>
 <style>
     #canvas{
         cursor:crosshair;
+        object-position: 20%;
     }
-    .container{
-        display: flex;
+    #lienzo{
+        
     }
 
+    .invisible{
+        display:none;
+    }
+
+    .container{
+        display: flex;
+        /*margin:5px;*/
+        flex-grow: 1;
+    }
 
 </style>
 
 <body>
-    <button id="nuevo">Nuevo</button>
-    <input class="input1" type="file" accept="image/*" style="display: none;">
-    <button onclick="document.querySelector('.input1').click();">Abrir imagen</button>
-    <a id="download" download="dibujo.png"><button type="button" onClick="download()">Descargar</button></a>
-    <div>
-        <p>Herramientas</p>
+    <div class="container">
+        <button id="nuevo">Nuevo</button>
+        <input class="input1" type="file" accept="image/*" style="display: none;">
+        <button onclick="document.querySelector('.input1').click();">Abrir imagen</button>
+        <a id="download" download="dibujo.png"><button type="button" onClick="download()">Descargar</button></a>
+    </div>
+    <div class="container">
+        <p>Herramientas></p>
         <select id="herramienta">
             <option value="pincel">Pincel</option>
             <option value="borrador">Borrador</option>
@@ -35,31 +47,40 @@
                 <p>Color: </p>
                 <input type="color" id="html5colorpicker" value="#000000">
             </div>
-            <p>Preview:</p><canvas id="canvasito" width="80" height="80"></canvas>
+                <p style="text-align: center;">Preview</p>
+                <canvas id="canvasito" width="80" height="80" style="border:#000 solid 1px;"></canvas>
+
         </div>
-        <p>Tamaño de lienzo</p>
-        <input type="number" value="800" step="1" min="1" max="2048" id="ancho">x
-        <input type="number" value="600" step="1" min="1" max="2048" id="alto">
+        <p>Filtros></p>
+        <div class="container">
+            <select id="filtro">
+                <option value="ninguno">Ninguno</option>
+                <option value="negativo">Negativo</option>
+                <option value="sepia">Sepia</option>
+                <option value="saturacion">Saturación</option>
+                <option value="brillo">Brillo</option>
+                <option value="binarizacion">Binarización</option>
+                <option value="sobel">Sobel</option>
+              </select>
+                  <div>
+                      <p style="text-align: center;">Parámetro</p>
+                      <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="parametro"><span id="valorparam">50%</span>
+                  </div>
+                  <button id="aplicar">Aplicar Filtro</button>
+                  <input type="color" id="html5colorpicker2" value="#000000" class="invisible">
+                  <p id="descripcion" style="margin-left: 2px;"></p>
+        </div>
+        <div>
+            <p style="text-align: center;">Tamaño del lienzo</p>
+            <input type="number" value="800" step="1" min="1" max="2048" id="ancho">x
+            <input type="number" value="600" step="1" min="1" max="2048" id="alto">
+        </div>
     </div>
 
     <div id="lienzo">
         <canvas id="canvas" style="border:#000 solid 1px;" width="800" height="600"></canvas>
     </div>
-    <p>Filtros</p>
-    <div class="container">
-        <select id="filtro">
-            <option value="ninguno">Ninguno</option>
-            <option value="negativo">Negativo</option>
-            <option value="sepia">Sepia</option>
-            <option value="saturacion">Saturación</option>
-            <option value="brillo">Brillo</option>
-          </select>
-              <div>
-                  <p>Parametro</p>
-                  <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="parametro"><span id="valorparam">50%</span>
-              </div>
-              <button id="aplicar">Aplicar Filtro</button>
-    </div>
+  
 </body>
 <script src="js/main.js"></script>
 </html>
