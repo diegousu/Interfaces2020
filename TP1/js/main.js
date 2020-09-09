@@ -21,7 +21,7 @@ alto.addEventListener("change", updateCanvas);
 document.querySelector("#filtro").addEventListener("change",setFiltro);
 document.querySelector("#parametro").addEventListener("change",setFiltro);
 document.querySelector("#aplicar").addEventListener("click",aplicarFiltro);
-
+document.querySelector("#btnAbrir").addEventListener("click",function(){document.querySelector('.input1').click()});
 
 canvas.addEventListener('mousemove', function(e) {
     posmouse.x = e.pageX - this.offsetLeft;
@@ -53,8 +53,7 @@ canvas.addEventListener('mouseup', function() {
  
 let pintando = function() {
     ctx.lineTo(posmouse.x, posmouse.y);
-    ctx.stroke();
-    
+    ctx.stroke();  
 };
 
 document.querySelector("#nuevo").addEventListener("click", canvasBlanco);
@@ -114,7 +113,7 @@ input.onchange = e => {
             alto.value=this.height;
         }
     }
-    document.querySelector("#filtro").value="Ninguno";
+    document.querySelector("#filtro").value="ninguno";
 }
 
 //resize
@@ -137,6 +136,8 @@ function download(){
 function setFiltro(){
     let filtro=document.querySelector("#filtro").value;
     let desc="";
+    let slider= document.querySelector("#parametro");
+    document.querySelector("#valorparam").innerHTML=Math.round(slider.value*100)+"%";
     if (filtro=="ninguno"){
         limpiarFiltro();
     }
@@ -160,21 +161,38 @@ function setFiltro(){
         goBinary();
         desc="El parámetro funciona como umbral a partir del cual </br>el pixel toma el valor del color elegido</br> o negro en caso de no superarlo.";
     }
-    if (filtro=="sobel"){
-        goSobel();
-        //desc="El parámetro funciona como umbral a partir del cual </br>el pixel toma el valor del color elegido</br> o negro en caso de no superarlo.";
+    if (filtro=="suavizado"){
+        goSobel([[1,1,1],[1,1,1],[1,1,1]],9);
+        //desc="";
+    }
+    if (filtro=="bordes"){
+        detectarBordes();
+        //desc="";
     }
     document.querySelector("#descripcion").innerHTML=desc;
-    let slider= document.querySelector("#parametro");
-    document.querySelector("#valorparam").innerHTML=Math.round(slider.value*100)+"%";
 }
 
-function goNegative(){
+function checkFilters(){
     if (aplicoFiltro)
         ctx.putImageData(imgBack,0,0);
     else{
         imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
     }
+}
+
+function limpiarFiltro(){
+    ctx.putImageData(imgBack,0,0);
+    aplicoFiltro=false;
+}
+
+function aplicarFiltro(){
+    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);
+    aplicoFiltro=false;
+    filtro.value="ninguno";
+}
+
+function goNegative(){
+    checkFilters();
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
      for (y=0;y<canvas.height;y++){
         for (x=0;x<canvas.width;x++){
@@ -186,16 +204,12 @@ function goNegative(){
      }
     ctx.putImageData(imageData,0,0);
     aplicoFiltro=true;
-
 }
 
 function goSepia(){
-    if (aplicoFiltro)
-        ctx.putImageData(imgBack,0,0);
-    else{
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
-    }
+    checkFilters();
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    let param=document.querySelector("#parametro").value*1.0;
     for (let j = 0; j < imageData.height; j++) {
         for (let i = 0; i < imageData.width; i++) {
                   let index = (i + imageData.width * j) * 4;
@@ -215,12 +229,8 @@ function goSepia(){
 }
 
 function goSaturation(){
-    if (aplicoFiltro)
-        ctx.putImageData(imgBack,0,0);
-    else{
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
-    }
-    let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    checkFilters();
+    imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
     let param=document.querySelector("#parametro").value*1.0+0.01;
      for (y=0;y<canvas.height;y++){
         for (x=0;x<canvas.width;x++){
@@ -237,22 +247,8 @@ function goSaturation(){
     aplicoFiltro=true;
 }
 
-function limpiarFiltro(){
-    ctx.putImageData(imgBack,0,0);
-}
-
-function aplicarFiltro(){
-    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);
-    aplicoFiltro=false;
-    filtro.value="ninguno";
-}
-
 function cambiarBrillo(){
-    if (aplicoFiltro)
-        ctx.putImageData(imgBack,0,0);
-    else{
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
-    }
+    checkFilters();
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
     let param=document.querySelector("#parametro").value*1.0*256-128;//lineal
     for (y=0;y<canvas.height;y++){
@@ -268,11 +264,7 @@ function cambiarBrillo(){
 }
 
 function goBinary(){
-    if (aplicoFiltro)
-        ctx.putImageData(imgBack,0,0);
-    else{
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
-    }
+    checkFilters();
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
     let param=document.querySelector("#parametro").value*1.0*255;
     let colori=document.querySelector("#html5colorpicker").value.slice(1,7);
@@ -297,30 +289,62 @@ function goBinary(){
     aplicoFiltro=true;
 }
 
-function goSobel(){
-    let kernel=[[1,1,1],[1,1,1],[1,1,1]];
-    if (aplicoFiltro)
-        ctx.putImageData(imgBack,0,0);
-    else{
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
-    }
+function goSobel(kernel,divisor){
+    checkFilters();
+    let param=document.querySelector("#parametro").value*10;
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
-    let result=imageData; let vecinos;
+    let result=imageData; 
     for (y=0;y<canvas.height;y++){
         for (x=0;x<canvas.width;x++){
             index=(x+y*imageData.width)*4;
-            vecinos=getVecinos(imageData,x,y);
-            let valorR=0; let valorG=0; let valorB=0;
+            let vecinos=getVecinos(imageData,x,y);
+            let valorR=0; let valorG=0; let valorB=0; //let valorA=0;
             for (let i = 0; i <=2; i++) {
-                for (let j = 0; j <=0; j++) {
-                    valorR+=vecinos[i][j].data[0]*kernel[j][i];
-                    valorG+=vecinos[i][j].data[1]*kernel[j][i];
-                    valorB+=vecinos[i][j].data[2]*kernel[j][i];
+                for (let j = 0; j <=2; j++) {
+                    valorR+=vecinos[i][j].data[0]*kernel[i][j];
+                    valorG+=vecinos[i][j].data[1]*kernel[i][j];
+                    valorB+=vecinos[i][j].data[2]*kernel[i][j];
+                    //valorA+=vecinos[i][j].data[3]*kernel[i][j];
                 }
             }
-            result.data[index]=valorR;
-            result.data[index+1]=valorG;
-            result.data[index+2]=valorB;
+            result.data[index]=(valorR/divisor)
+            result.data[index+1]=(valorG/divisor);
+            result.data[index+2]=(valorB/divisor);
+           // result.data[index+3]=valorA;
+        }
+    }
+    ctx.putImageData(result,0,0);
+    aplicoFiltro=true;
+}
+
+function detectarBordes(){
+    checkFilters();
+    let imgparcial=getBYN();
+    let param=document.querySelector("#parametro").value*1000;
+    let kernelY=[[-1,-2,-1],[0,0,0],[1,2,1]];
+    let kernelX=[[-1,0,1],[-2,0,2],[-1,0,1]];
+    let color=document.querySelector("#html5colorpicker").value.slice(1,7);
+        color=hexToRgb(color);
+    let negro=hexToRgb("000000");
+    let result=ctx.getImageData(0,0,canvas.width,canvas.height);
+    for (y=0;y<imgparcial.height;y++){
+        for (x=0;x<imgparcial.width;x++){
+            index=(x+y*canvas.width)*4;
+            let gx=0; let gy=0;
+            let vecinos=getVecinos(imgparcial,x,y);
+            for (let i = 0; i <=2; i++) {
+                for (let j = 0; j <=2; j++) {
+                    gx+=vecinos[i][j].data[0]*kernelX[i][j];
+                    gy+=vecinos[i][j].data[0]*kernelY[i][j];
+                }
+            }
+            let G=Math.sqrt(gx*gx+gy*gy);
+            let colorFinal=negro;
+                if (G>param)
+                    colorFinal=color;
+            result.data[index+0]=colorFinal.r;
+            result.data[index+1]=colorFinal.g;
+            result.data[index+2]=colorFinal.b;
         }
     }
     ctx.putImageData(result,0,0);
@@ -328,7 +352,21 @@ function goSobel(){
 }
 
 
-//SOBEL
+function getBYN(){
+    let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    for (y=0;y<canvas.height;y++){
+        for (x=0;x<canvas.width;x++){
+            index=(x+y*imageData.width)*4;
+            let promedio=(imageData.data[index+0]+imageData.data[index+1]+imageData.data[index+2])/3;
+                imageData.data[index+0]=promedio;
+                imageData.data[index+1]=promedio;
+                imageData.data[index+2]=promedio;
+        }
+    }
+    return imageData;
+}
+
+//HELPERS
 
 function getVecinos(imageData, x,y){
     let result=new Array(3);
@@ -339,20 +377,16 @@ function getVecinos(imageData, x,y){
     let index=(x+y*imageData.width)*4;
     for (let i = -1; i <=1; i++) {
         for (let j = -1; j <=1; j++) {
+            let newIndex=((x+i)+(y+j)*canvas.width)*4;
             if (x+i>=0 && y+j>=0 && x+i<=imageData.width && y+j<=imageData.height)
-                pixel={data:[imageData.data[index+0],imageData.data[index+1],imageData.data[index+2]]};
+                //pixel={data:[imageData.data[newIndex+0],imageData.data[newIndex+1],imageData.data[newIndex+2],imageData.data[newIndex+3]]};//suma el canal alpha
+                pixel={data:[imageData.data[newIndex+0],imageData.data[newIndex+1],imageData.data[newIndex+2]]};
             else pixel=outofbounds;
             result[i+1][j+1]=pixel;
         }
     }
     return result;
 }
-    
-
-
-
-//HELPERS
-
 
 function hslToRgb (h, s, l) {
     // Achromatic
