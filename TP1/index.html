@@ -10,9 +10,6 @@
         cursor:crosshair;
         object-position: 20%;
     }
-    #lienzo{
-        
-    }
 
     .invisible{
         display:none;
@@ -34,25 +31,32 @@
         <a id="download" download="dibujo.png"><button type="button" onClick="download()">Descargar</button></a>
     </div>
     <div class="container">
-        <p>Herramientas></p>
-        <select id="herramienta">
-            <option value="pincel">Pincel</option>
-            <option value="borrador">Borrador</option>
-          </select>
-        <div class="container">
-            <div>
-                <p>Tamaño: </p><input type="range" min="1" max="50" value="10" class="slider" id="tamaño">
-            </div>
-            <div>
-                <p>Color: </p>
+        <fieldset id="herramientas">
+            <legend>Herramientas</legend>
+            <input type="radio" id="pincel" name="herramienta" value="pincel" checked>
+            <label for="pincel"><img src="img/pincel.jpg"></label>
+            <input type="radio" id="borrador" name="herramienta" value="borrador">
+            <label for="borrador"><img src="img/borrador.jpg"></label>
+            <input type="radio" id="gotero" name="herramienta" value="gotero">
+            <label for="gotero"><img src="img/gotero.jpg" alt="" srcset=""></label>
+        </fieldset>
+        <fieldset>
+            <legend>Configuración</legend>
+            <fieldset style="display: inline-block;border-color: transparent;">
+                <legend>Color</legend>
                 <input type="color" id="html5colorpicker" value="#FF0000">
-            </div>
-                <p style="text-align: center;">Preview</p>
-                <canvas id="canvasito" width="80" height="80" style="border:#000 solid 1px;"></canvas>
-
-        </div>
-        <p>Filtros></p>
-        <div class="container">
+            <fieldset style="display: inline-block;border-color: transparent;">
+                <legend>Tamaño</legend>
+                <input type="range" min="1" max="50" value="10" class="slider" id="tamaño" style="display: inline-block;">
+            </fieldset>
+            </fieldset>
+            <fieldset style="display: inline-block;border-color: transparent;">
+                <legend>Preview</legend>
+                <canvas id="canvasito" width="60" height="60" style="border:#000 solid 1px;"></canvas>
+            </fieldset>
+        </fieldset>
+        <fieldset>
+            <legend>Filtros</legend>
             <select id="filtro">
                 <option value="ninguno">Ninguno</option>
                 <option value="negativo">Negativo</option>
@@ -62,24 +66,22 @@
                 <option value="binarizacion">Binarización</option>
                 <option value="suavizado">Suavizado</option>
                 <option value="bordes">Detectar bordes</option>
-              </select>
-                  <div>
-                      <p style="text-align: center;">Parámetro</p>
-                      <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="parametro"><span id="valorparam"></span>
-                  </div>
-                  <button id="aplicar">Aplicar Filtro</button>
-                  <input type="color" id="html5colorpicker2" value="#000000" class="invisible">
-                  <p id="descripcion" style="margin-left: 2px;"></p>
-        </div>
-        <div>
+            </select>
+                    <p style="text-align: left;">Parámetro</p>
+                    <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="parametro"><span id="valorparam"></span>
+                <button id="aplicar">Aplicar Filtro</button>
+                <p id="descripcion" style="margin-left: 2px;"></p>
+        </fieldset>
+        <fieldset>
+            <legend>Tamaño del lienzo</legend>
             <p style="text-align: center;">Tamaño del lienzo</p>
-            <input type="number" value="800" step="1" min="1" max="2048" id="ancho">x
-            <input type="number" value="600" step="1" min="1" max="2048" id="alto">
-        </div>
+            <input type="number" value="1024" step="1" min="1" max="2048" id="ancho">x
+            <input type="number" value="768" step="1" min="1" max="2048" id="alto">
+        </fieldset>
     </div>
 
     <div id="lienzo">
-        <canvas id="canvas" style="border:#000 solid 1px;" width="800" height="600"></canvas>
+        <canvas id="canvas" style="border:#000 solid 1px;" width="1024" height="768"></canvas>
     </div>
   
 </body>

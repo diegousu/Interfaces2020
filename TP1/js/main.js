@@ -47,13 +47,22 @@ canvas.addEventListener('mousedown', function(e) {
 }, false);
 
 canvas.addEventListener('mouseup', function() {
+    if (herramienta=="gotero"){
+        let dato=ctx.getImageData(posmouse.x,posmouse.y,1,1).data;
+        let color=rgbToHex("rgba("+dato[0]+","+dato[1]+","+dato[2]+","+dato[3]);
+        document.querySelector("#html5colorpicker").value=color;
+        actualizarCanvasito();
+    }
+    else
+        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
     canvas.removeEventListener('mousemove', pintando, false);
-    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
     }, false);
  
 let pintando = function() {
-    ctx.lineTo(posmouse.x, posmouse.y);
-    ctx.stroke();  
+    if (herramienta!="gotero"){
+            ctx.lineTo(posmouse.x, posmouse.y);
+            ctx.stroke();  
+    }
 };
 
 document.querySelector("#nuevo").addEventListener("click", canvasBlanco);
@@ -72,7 +81,12 @@ function getCoords(){
 }
 
 function cambiarherramienta(){
-    herramienta=document.querySelector("#herramienta").value;
+    let tools=document.querySelector("#herramientas").children;
+    for(let i=0;i<tools.length;i++){
+        if (tools[i].tagName=="INPUT")
+            if (tools[i].checked)
+                herramienta=tools[i].value;
+    }
 }
 
 
@@ -163,11 +177,11 @@ function setFiltro(){
     }
     if (filtro=="suavizado"){
         goSobel([[1,1,1],[1,1,1],[1,1,1]],9);
-        //desc="";
+        desc="Promedia cada píxel con su alrededor</br> para dar un efecto difuminado";
     }
     if (filtro=="bordes"){
         detectarBordes();
-        //desc="";
+        desc="Detecta bordes de la imagen y los pinta con el color seleccionado.</br>El parámetro funciona como umbral.";
     }
     document.querySelector("#descripcion").innerHTML=desc;
 }
@@ -189,6 +203,7 @@ function aplicarFiltro(){
     imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);
     aplicoFiltro=false;
     filtro.value="ninguno";
+    setFiltro();
 }
 
 function goNegative(){
@@ -450,3 +465,11 @@ function hexToRgb(hex) {
       b: parseInt(result[3], 16)
     } : null;
   }
+
+  function rgbToHex(rgb){
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+     ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+     ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+     ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+   }
