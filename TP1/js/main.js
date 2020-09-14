@@ -6,7 +6,7 @@ let posmouse = {x: 0, y: 0};
 let input = document.querySelector('.input1');
 let ancho=document.querySelector("#ancho");
 let alto=document.querySelector("#alto");
-let imgBack; let aplicoFiltro=false;
+let imgBack=[]; let aplicoFiltro=false;
 let herramienta="pincel";
 let tamOriginal={width:1024,height:768};
 actualizarCanvasito();
@@ -25,12 +25,15 @@ document.querySelector("#parametro").addEventListener("change",setFiltro);
 document.querySelector("#aplicar").addEventListener("click",aplicarFiltro);
 document.querySelector("#btnAbrir").addEventListener("click",function(){document.querySelector('.input1').click()});
 document.querySelector("#herramientas").addEventListener("click",cambiarherramienta);
+document.querySelector("#btnDeshacer").addEventListener("click", function(){if (imgBack.length>=1)
+                                                                            updateCanvas();});
 canvas.addEventListener('mousemove', function(e) {
     posmouse.x = e.pageX - this.offsetLeft;
     posmouse.y = e.pageY - this.offsetTop;
   }, false);
 
 canvas.addEventListener('mousedown', function(e) {
+    imgBack.push(ctx.getImageData(0,0,canvas.width,canvas.height));//hace backup del canvas
     ctx.beginPath();
     canvas.addEventListener('mousemove', pintando, false);
     ctx.moveTo(posmouse.x, posmouse.y);
@@ -56,7 +59,6 @@ canvas.addEventListener('mouseup', function() {
     }
     else{
         canvas.removeEventListener('mousemove', pintando, false);
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
     }
 }, false);
  
@@ -76,8 +78,8 @@ function canvasBlanco(){
     canvas.height=alto.value=tamOriginal.height;
     ctx.fillStyle="white";
     ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.beginPath();
-    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
+    imgBack=[];
+    imgBack.push(ctx.getImageData(0,0,canvas.width,canvas.height));//hace backup del canvas
 }
 
 function getCoords(){
@@ -86,7 +88,6 @@ function getCoords(){
 
 function cambiarherramienta(){
     let tools=document.querySelector("#herramientas").children;
-    console.log(tools);
     for(let i=0;i<tools.length;i++){
         if (tools[i].tagName=="INPUT"){
             tools[i+1].firstChild.classList.remove("selected");
@@ -132,7 +133,7 @@ input.onchange = e => {
             canvas.width=this.width;
             canvas.height=this.height;
             ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
-            imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
+            imgBack.push(ctx.getImageData(0,0,canvas.width,canvas.height));//hace backup del canvas
             ancho.value=this.width;
             alto.value=this.height;
         }
@@ -144,7 +145,7 @@ input.onchange = e => {
 function updateCanvas(){
     canvas.height=alto.value;
     canvas.width=ancho.value;
-    ctx.putImageData(imgBack,0,0);
+    ctx.putImageData(imgBack.pop(),0,0);
 }
 
 
@@ -198,19 +199,19 @@ function setFiltro(){
 
 function checkFilters(){
     if (aplicoFiltro)
-        ctx.putImageData(imgBack,0,0);
+        ctx.putImageData(imgBack[imgBack.length-1],0,0);
     else{
-        imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup
+        imgBack.push(ctx.getImageData(0,0,canvas.width,canvas.height));//hace backup
     }
 }
 
 function limpiarFiltro(){
-    ctx.putImageData(imgBack,0,0);
+    ctx.putImageData(imgBack.pop(),0,0);
     aplicoFiltro=false;
 }
 
 function aplicarFiltro(){
-    imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);
+    imgBack.push(ctx.getImageData(0,0,canvas.width,canvas.height));
     aplicoFiltro=false;
     filtro.value="ninguno";
     setFiltro();
