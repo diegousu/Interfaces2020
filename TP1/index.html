@@ -21,6 +21,10 @@
         flex-grow: 1;
     }
 
+    .selected{
+        border:1px solid black;
+    }
+
 </style>
 
 <body>
@@ -33,12 +37,13 @@
     <div class="container">
         <fieldset id="herramientas">
             <legend>Herramientas</legend>
-            <input type="radio" id="pincel" name="herramienta" value="pincel" checked>
-            <label for="pincel"><img src="img/pincel.jpg"></label>
-            <input type="radio" id="borrador" name="herramienta" value="borrador">
+            <input type="radio" id="pincel" name="herramienta" value="pincel" checked style="display: none;">
+            <label for="pincel"><img class="selected" src="img/pincel.jpg"></label>
+            <input type="radio" id="borrador" name="herramienta" value="borrador" style="display: none;">
             <label for="borrador"><img src="img/borrador.jpg"></label>
-            <input type="radio" id="gotero" name="herramienta" value="gotero">
+            <input type="radio" id="gotero" name="herramienta" value="gotero" style="display: none;">
             <label for="gotero"><img src="img/gotero.jpg" alt="" srcset=""></label>
+            <p id="nomHerram">Seleccionado: pincel</p>
         </fieldset>
         <fieldset>
             <legend>Configuración</legend>
@@ -67,23 +72,22 @@
                 <option value="suavizado">Suavizado</option>
                 <option value="bordes">Detectar bordes</option>
             </select>
-                    <p style="text-align: left;">Parámetro</p>
-                    <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="parametro"><span id="valorparam"></span>
-                <button id="aplicar">Aplicar Filtro</button>
-                <p id="descripcion" style="margin-left: 2px;"></p>
+            <p style="text-align: left;">Parámetro</p>
+            <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="parametro"><span id="valorparam"></span>
+            <button id="aplicar">Aplicar Filtro</button>
         </fieldset>
-        <fieldset>
-            <legend>Tamaño del lienzo</legend>
-            <p style="text-align: center;">Tamaño del lienzo</p>
-            <input type="number" value="1024" step="1" min="1" max="2048" id="ancho">x
-            <input type="number" value="768" step="1" min="1" max="2048" id="alto">
-        </fieldset>
+        <p id="descripcion" style="margin-left: 2px;display: inline-block;"></p>
+       
     </div>
 
     <div id="lienzo">
         <canvas id="canvas" style="border:#000 solid 1px;" width="1024" height="768"></canvas>
     </div>
-  
+    <fieldset style="display: inline-block;">
+        <legend>Tamaño del lienzo</legend>
+        <input type="number" value="1024" step="1" min="1" max="2048" id="ancho">x
+        <input type="number" value="768" step="1" min="1" max="2048" id="alto">
+    </fieldset>
 </body>
 <script src="js/main.js"></script>
 </html>

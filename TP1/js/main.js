@@ -8,10 +8,11 @@ let ancho=document.querySelector("#ancho");
 let alto=document.querySelector("#alto");
 let imgBack; let aplicoFiltro=false;
 let herramienta="pincel";
+let tamOriginal={width:1024,height:768};
 actualizarCanvasito();
 canvasBlanco();
 
-
+//LISTENERS
 //mini canvas preview
 document.querySelector("#tamaño").addEventListener("change",actualizarCanvasito);
 document.querySelector("#html5colorpicker").addEventListener("change",actualizarCanvasito);
@@ -22,14 +23,13 @@ document.querySelector("#filtro").addEventListener("change",setFiltro);
 document.querySelector("#parametro").addEventListener("change",setFiltro);
 document.querySelector("#aplicar").addEventListener("click",aplicarFiltro);
 document.querySelector("#btnAbrir").addEventListener("click",function(){document.querySelector('.input1').click()});
-
+document.querySelector("#herramientas").addEventListener("click",cambiarherramienta);
 canvas.addEventListener('mousemove', function(e) {
     posmouse.x = e.pageX - this.offsetLeft;
     posmouse.y = e.pageY - this.offsetTop;
   }, false);
 
 canvas.addEventListener('mousedown', function(e) {
-    cambiarherramienta();
     ctx.beginPath();
     canvas.addEventListener('mousemove', pintando, false);
     ctx.moveTo(posmouse.x, posmouse.y);
@@ -53,10 +53,11 @@ canvas.addEventListener('mouseup', function() {
         document.querySelector("#html5colorpicker").value=color;
         actualizarCanvasito();
     }
-    else
+    else{
+        canvas.removeEventListener('mousemove', pintando, false);
         imgBack=ctx.getImageData(0,0,canvas.width,canvas.height);//hace backup del canvas
-    canvas.removeEventListener('mousemove', pintando, false);
-    }, false);
+    }
+}, false);
  
 let pintando = function() {
     if (herramienta!="gotero"){
@@ -65,11 +66,13 @@ let pintando = function() {
     }
 };
 
+canvas.addEventListener("mouseleave", function(){canvas.removeEventListener('mousemove', pintando, false)});
+
 document.querySelector("#nuevo").addEventListener("click", canvasBlanco);
 
 function canvasBlanco(){
-    canvas.width=ancho.value;
-    canvas.height=alto.value;
+    canvas.width=ancho.value=tamOriginal.width;
+    canvas.height=alto.value=tamOriginal.height;
     ctx.fillStyle="white";
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.beginPath();
@@ -82,10 +85,16 @@ function getCoords(){
 
 function cambiarherramienta(){
     let tools=document.querySelector("#herramientas").children;
+    console.log(tools);
     for(let i=0;i<tools.length;i++){
-        if (tools[i].tagName=="INPUT")
-            if (tools[i].checked)
+        if (tools[i].tagName=="INPUT"){
+            tools[i+1].firstChild.classList.remove("selected");
+            if (tools[i].checked){
                 herramienta=tools[i].value;
+                tools[i+1].firstChild.classList.add("selected");
+                document.querySelector("#nomHerram").innerHTML="Seleccionado: "+tools[i].value;
+            }
+        }
     }
 }
 
@@ -177,7 +186,7 @@ function setFiltro(){
     }
     if (filtro=="suavizado"){
         goSobel([[1,1,1],[1,1,1],[1,1,1]],9);
-        desc="Promedia cada píxel con su alrededor</br> para dar un efecto difuminado";
+        desc="Promedia cada píxel con su alrededor</br> para dar un efecto levemente difuminado";
     }
     if (filtro=="bordes"){
         detectarBordes();
@@ -306,26 +315,24 @@ function goBinary(){
 
 function goSobel(kernel,divisor){
     checkFilters();
-    let param=document.querySelector("#parametro").value*10;
+    let param=document.querySelector("#parametro").value*1.0;
     let imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
-    let result=imageData; 
+    let result=ctx.getImageData(0,0,canvas.width,canvas.height); 
     for (y=0;y<canvas.height;y++){
         for (x=0;x<canvas.width;x++){
             index=(x+y*imageData.width)*4;
             let vecinos=getVecinos(imageData,x,y);
-            let valorR=0; let valorG=0; let valorB=0; //let valorA=0;
+            let valorR=0; let valorG=0; let valorB=0;
             for (let i = 0; i <=2; i++) {
                 for (let j = 0; j <=2; j++) {
                     valorR+=vecinos[i][j].data[0]*kernel[i][j];
                     valorG+=vecinos[i][j].data[1]*kernel[i][j];
                     valorB+=vecinos[i][j].data[2]*kernel[i][j];
-                    //valorA+=vecinos[i][j].data[3]*kernel[i][j];
                 }
             }
-            result.data[index]=(valorR/divisor)
+            result.data[index]=(valorR/(divisor))
             result.data[index+1]=(valorG/divisor);
             result.data[index+2]=(valorB/divisor);
-           // result.data[index+3]=valorA;
         }
     }
     ctx.putImageData(result,0,0);
