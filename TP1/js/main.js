@@ -11,7 +11,6 @@ let herramienta="pincel";
 actualizarCanvasito();
 canvasBlanco();
 
-
 //mini canvas preview
 document.querySelector("#tamaño").addEventListener("change",actualizarCanvasito);
 document.querySelector("#html5colorpicker").addEventListener("change",actualizarCanvasito);
