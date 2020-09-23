@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPE 2 - Coloca 4</title>
+</head>
+<style>
+    .hidden{
+        display: none;
+    }
+    .centrado{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .izquierda{
+        padding-left: 7%;
+        position: fixed;
+        left: 0;
+        top: 10%;
+    }
+
+</style>
+
+<body>
+    <div class="izquierda">
+        <button id="btnIniciar">Iniciar Juego</button>
+        <p>Turno jugador 1</p>
+        <fieldset id="tamTablero">
+            <legend>Tamaño del tablero</legend>
+            <input type="number" name="" id="numFilas" value="6" min="4" max="8"><span>x</span>
+            <input type="number" name="" id="numColumnas" value="7" min="4" max="12">
+        </fieldset>
+    </div>
+    <div class="centrado">
+        <canvas  id="canvas" class="hidden" style="border: 1px solid black;"></canvas>
+    </div>
+</body>
+<script src="js/Ficha.js"></script>
+<script src="js/Tablero.js"></script>
+<script src="js/Juego.js"></script>
+<script src="js/main.js"></script>
+</html>
