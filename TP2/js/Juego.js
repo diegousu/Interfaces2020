@@ -10,6 +10,7 @@ class Juego{
         this.mousePosX;
         this.mousePosY;
         this.imgs=imgs;
+        this.fichaSelec=null;
         this.tablero=new Tablero(filas, columnas, espaciado, context);
         this.cantFichas=filas*columnas;
         //this.cantFichas=4;
@@ -35,9 +36,10 @@ class Juego{
         let ficha=this.buscarFicha(x,y, this.jugador);
         let self=this;
         if (ficha!=-1){
-            //mover la ficha
-            this.canvas.addEventListener("mousemove", ()=>{this.moverficha(ficha)});
-            this.canvas.addEventListener("mouseup", ()=>{this.checkJugada(ficha)});
+            //mover la ficha 
+            this.fichaSelec=ficha;
+            this.canvas.addEventListener("mousemove", ()=>{this.moverficha()});
+            this.canvas.addEventListener("mouseup", ()=>{this.checkJugada()});
         }
         else
             console.log("Jugador eligio ficha equivocada o ninguna");
@@ -75,15 +77,18 @@ class Juego{
         this.mousePosY=e.offsetY;
     }
 
-    moverficha=(ficha)=>{
+    moverficha(){
+        let ficha=this.fichaSelec;
         let posficha=this.fichas[ficha].getPosicion;
         let x=this.mousePosX; let y=this.mousePosY;
         this.fichas[ficha].setPosicion(x,y);
         this.draw();
     }
-
-    checkJugada(ficha){
+    
+    checkJugada(){
         console.log("mouse up");
-        this.canvas.removeEventListener("mousemove", this.moverficha);
+        let clone=this.canvas.cloneNode(true);
+        this.canvas=clone;
+        canvas.addEventListener("mousedown", ()=>{this.makeJugada});
     }
 }

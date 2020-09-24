@@ -7,6 +7,9 @@ class Ficha{
         this.posX=posX;
         this.posY=posY;
         this.img=img;
+        this.escalado=20;
+        this.offset={x:0,y:0};
+        this.radio=(this.espaciado.horizontal/2)-(this.escalado/2);
     }
 
     getPosicion(){
@@ -22,7 +25,7 @@ class Ficha{
         this.usada=true;
     }
 
-    getEstado(){
+    isUsada(){
         return this.usada;
     }
 
@@ -31,14 +34,19 @@ class Ficha{
     }
 
     draw() {
-        this.ctx.drawImage(this.img,this.posX,this.posY, this.espaciado.horizontal-24,this.espaciado.vertical-24);
+        this.ctx.drawImage(this.img,this.posX-this.radio,this.posY-this.radio, this.espaciado.horizontal-this.escalado,this.espaciado.vertical-this.escalado);
     }
     
     isSelected(x,y){
-        let radio=this.espaciado.horizontal/2;
-        let posx=this.posX+radio; let posy=this.posY+radio;
-        let longLinea=Math.sqrt(Math.pow(x-posx,2)+Math.pow(y-posy,2));
-        return longLinea<=radio;
+        let longLinea=Math.sqrt(Math.pow(x-this.posX,2)+Math.pow(y-this.posY,2));
+        if (longLinea<=this.radio){
+            return true;
+        }
+        else return false;
+    }
+
+    resetOffset(){
+        this.offset={x:0,y:0};
     }
 
 }
