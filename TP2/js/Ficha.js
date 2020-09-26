@@ -7,7 +7,7 @@ class Ficha{
         this.posX=posX;
         this.posY=posY;
         this.img=img;
-        this.escalado=20;
+        this.escalado=this.espaciado.horizontal*0.18;
         this.offset={x:0,y:0};
         this.radio=(this.espaciado.horizontal/2)-(this.escalado/2);
     }
@@ -45,8 +45,5 @@ class Ficha{
         else return false;
     }
 
-    resetOffset(){
-        this.offset={x:0,y:0};
-    }
 
 }
