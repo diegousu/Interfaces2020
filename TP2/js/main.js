@@ -1,5 +1,6 @@
 let canvas=document.querySelector("#canvas");
 let ctx=canvas.getContext("2d");
+let cargaTerminada=false;
 cargarImgs();
 let turno=document.querySelector("#turno");
 
@@ -25,6 +26,7 @@ let botoninicio=document.querySelector("#btnIniciar");
     botoninicio.addEventListener("click", iniciarJuego);
     
 function iniciarJuego(){
+    if (cargaTerminada){
         let cantFilas=document.querySelector("#numFilas").value*1.0;
         let cantColumnas=document.querySelector("#numColumnas").value*1.0;
         document.querySelector("#tamTablero").classList.add("hidden");
@@ -49,6 +51,9 @@ function iniciarJuego(){
         canvas.addEventListener("mousemove", actualizarPosMouse);
         generarFichas(juego.espaciado.horizontal*0.5,1,canvas.width-(juego.espaciado.horizontal*0.5),2);
         draw();
+    }
+    else 
+        botoninicio.innerHTML="Cargando imágenes";
 }
 
 
@@ -205,6 +210,8 @@ function cargarImgs(){
                                     loose.src="./img/looser.png";
                                     loose.onload=function(){
                                     juego.imgs.push(loose);
+                                    cargaTerminada=true;
+                                    botoninicio.innerHTML="Iniciar Juego";
                                 }
                                 }
                             }
