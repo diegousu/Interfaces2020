@@ -35,18 +35,27 @@
         font-size: 30px;
     }
 
+    .timer{
+        background-color: black;
+        height: 4px;
+    }
+
 </style>
 
 <body>
     <div class="centrado">
         <fieldset class="letraGrande" id="tamTablero">
-            <legend>Tamaño del tablero</legend>
+            <legend>Tamaño del tablero y tiempo de jugada</legend>
             <input class="letraGrande" type="number" name="" id="numFilas" value="6" min="4" max="8"><span>x</span>
             <input class="letraGrande" type="number" name="" id="numColumnas" value="7" min="4" max="12">
+            </br>
+            <p>Tiempo de jugada (seg): <input class="letraGrande" type="number" name="" id="tiempoJugada" value="10" min="0" max="30"></p>
+            <p>0=sin tiempo de turno</p>
         </fieldset>
         <button id="btnIniciar" style="font-size: large;">Iniciar Juego</button>
         <h2 id="turno" class="hinchable" style="display: inline;"></h2>
         </br>
+        <div id="timer" class="hidden"></div>
         <canvas  id="canvas" class="hidden"></canvas>
     </div>
 </body>
