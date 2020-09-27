@@ -3,9 +3,11 @@ let ctx=canvas.getContext("2d");
 let cargaTerminada=false;
 cargarImgs();
 let turno=document.querySelector("#turno");
+let timer=document.querySelector("#timer");
+let timer1;
 
 let juego={
-    filas:0,
+        filas:0,
         columnas:0,
         espaciado:0,
         jugador:null,
@@ -17,7 +19,8 @@ let juego={
         cantFichas:0,
         mousePosX:0,
         mousePosY:0,
-        backupPos:0
+        backupPos:0,
+        tiempoJugada:0
     };
 
 
@@ -27,15 +30,29 @@ let botoninicio=document.querySelector("#btnIniciar");
     
 function iniciarJuego(){
     if (cargaTerminada){
+        botoninicio.removeEventListener("click", iniciarJuego);
+        botoninicio.addEventListener("click", function(){location.reload()});
         let cantFilas=document.querySelector("#numFilas").value*1.0;
         let cantColumnas=document.querySelector("#numColumnas").value*1.0;
         document.querySelector("#tamTablero").classList.add("hidden");
         botoninicio.innerHTML="Reiniciar partida";
         canvas.classList.remove("hidden");
-        canvas.width=window.innerWidth*0.7;
-        let espacio=Math.floor(canvas.width/(cantColumnas+2));
-        canvas.height=espacio*cantFilas;
-        let espaciado={horizontal:espacio, vertical:espacio};
+        juego.tiempoJugada=parseInt(document.querySelector("#tiempoJugada").value)
+        if (juego.tiempoJugada!=0)
+            timer.classList.remove("hidden");
+        timer.classList.add("timer");
+        let espacio;
+        if (cantFilas<cantColumnas){
+            canvas.width=window.innerWidth*0.7;
+            espacio=Math.floor(canvas.width/(cantColumnas+2));
+            canvas.height=espacio*cantFilas;
+        }
+        else{
+            canvas.height=window.innerHeight*0.9;
+            espacio=Math.floor(canvas.height/cantFilas);
+            canvas.width=espacio*(cantColumnas+2);
+        }
+        timer.width=espacio*(cantColumnas+2);
         //"Instanciado" del juego
         theresawinner=false;
         theresatie=false;
@@ -45,12 +62,14 @@ function iniciarJuego(){
         juego.filas=cantFilas;
         juego.columnas=cantColumnas;
         juego.cantFichas=juego.columnas*juego.filas;
-        juego.espaciado=espaciado;
+        juego.espaciado=espacio;
         juego.tablero=new Tablero(juego.filas, juego.columnas, juego.espaciado, ctx, juego.imgs[2], juego.imgs[3], juego.imgs[4], juego.imgs[5]);
         canvas.addEventListener("mousedown", makeJugada);
         canvas.addEventListener("mousemove", actualizarPosMouse);
-        generarFichas(juego.espaciado.horizontal*0.5,1,canvas.width-(juego.espaciado.horizontal*0.5),2);
+        generarFichas(juego.espaciado*0.5,1,canvas.width-(juego.espaciado*0.5),2);
         draw();
+        if (juego.tiempoJugada>0)
+            timer1=setInterval(timerfunc, 1000);
     }
     else 
         botoninicio.innerHTML="Cargando imágenes";
@@ -77,6 +96,13 @@ function cambiarJugador(){
     else{
         juego.jugador=1;
         turno.style.color="blue";
+    }
+    if (juego.tiempoJugada>0){
+        clearInterval(timer1);
+        timer.style.backgroundColor="black";
+        timer.width=canvas.width;
+        timer.style.width=timer.width+"px";
+        timer1=setInterval(timerfunc, 1000);
     }
     turno.innerHTML="Turno jugador "+juego.jugador;
 }
@@ -128,41 +154,50 @@ function moverficha(){
 }
 
 function checkJugada(){
-    let jugada=juego.tablero.makeJugada(juego.mousePosX, juego.mousePosY, juego.jugador);
-    if (jugada.exito){
-        juego.fichas[juego.fichaSelec].setUsada();
-        let nuevapos={x:juego.espaciado.horizontal+juego.espaciado.horizontal/1.98+(jugada.x*juego.espaciado.horizontal), y:juego.espaciado.horizontal/1.98+(jugada.y)*(juego.espaciado.vertical)};
-        juego.fichas[juego.fichaSelec].setPosicion(nuevapos.x, nuevapos.y);
-        if (juego.tablero.checkJugada(jugada.y,jugada.x,juego.jugador)){
-            turno.innerHTML="¡Ganó Jugador "+juego.jugador+"!";
+    if (juego.fichaSelec!=null){
+        let jugada=juego.tablero.makeJugada(juego.mousePosX, juego.mousePosY, juego.jugador);
+        if (jugada.exito){
+            juego.fichas[juego.fichaSelec].setUsada();
+            let nuevapos={x:juego.espaciado+juego.espaciado/1.98+(jugada.x*juego.espaciado), y:juego.espaciado/1.98+(jugada.y)*(juego.espaciado)};
+            juego.fichas[juego.fichaSelec].setPosicion(nuevapos.x, nuevapos.y);
+            if (juego.tablero.checkJugada(jugada.y,jugada.x,juego.jugador)){
+                turno.innerHTML="¡Ganó Jugador "+juego.jugador+"!";
+                canvas.removeEventListener("mousedown", makeJugada);
+                theresawinner=true;
+            }
+            else{
+                if (juego.tablero.contarFichas()==juego.cantFichas)//empate
+                    theresatie=true;
+                else
+                    cambiarJugador();
+            }
+        }
+        else
+            juego.fichas[juego.fichaSelec].setPosicion(juego.backupPos.x,juego.backupPos.y);
+        juego.backupPos=0;
+        juego.fichaSelec=null;
+        canvas.removeEventListener("mousemove", moverficha);
+        canvas.removeEventListener("mouseup", checkJugada);
+        draw();
+        if (theresawinner){
+            if (juego.tiempoJugada>0)
+                clearInterval(timer1);
+            timer.classList.add("hidden");
+            juego.tablero.dibujarTrofeo(juego.jugador);
+            juego.tablero.pintarJugadaGanadora(jugada.y, jugada.x, juego.jugador);
+        }
+        if (theresatie){
+            if (juego.tiempoJugada>0)
+                clearInterval(timer1);
+            timer.classList.add("hidden");
+            turno.style.color="black"
+            turno.innerHTML="Juego Empatado";
             canvas.removeEventListener("mousedown", makeJugada);
-            theresawinner=true;
+            juego.tablero.drawGris();
         }
-        else{
-            if (juego.tablero.contarFichas()==juego.cantFichas)//empate
-                theresatie=true;
-            else
-                cambiarJugador();
-        }
-    }
-    else
-        juego.fichas[juego.fichaSelec].setPosicion(juego.backupPos.x,juego.backupPos.y);
-    juego.backupPos=0;
-    juego.fichaSelec=null;
-    canvas.removeEventListener("mousemove", moverficha);
-    canvas.removeEventListener("mouseup", checkJugada);
-    draw();
-    if (theresawinner){
-        juego.tablero.dibujarTrofeo(juego.jugador);
-        juego.tablero.pintarJugadaGanadora(jugada.y, jugada.x, juego.jugador);
-    }
-    if (theresatie){
-        turno.style.color="black"
-        turno.innerHTML="Juego Empatado";
-        canvas.removeEventListener("mousedown", makeJugada);
-        juego.tablero.drawGris();
     }
 }
+
 
 
 //HELPERS
@@ -174,13 +209,13 @@ function actualizarPosMouse(e){
 
 function generarFichas(posx1, jugador1, posx2, jugador2){
     juego.fichas=new Array();
-    for (let i=0;i<Math.ceil(juego.cantFichas/2);i++){
-        let posy=(juego.espaciado.vertical/2)+Math.round(Math.random()*(juego.espaciado.vertical*(juego.filas-1.5)));
+    for (let i=0;i<Math.ceil(juego.cantFichas/2)+2;i++){
+        let posy=(juego.espaciado/2)+Math.round(Math.random()*(juego.espaciado*(juego.filas-1.5)));
         juego.fichas.push(new Ficha(ctx, jugador1, juego.espaciado, posx1, posy, juego.imgs[0]));
     }
     
-    for (let i=Math.ceil(juego.cantFichas/2);i<juego.cantFichas;i++){
-        let posy=(juego.espaciado.vertical/2)+Math.round(Math.random()*(juego.espaciado.vertical*(juego.filas-1.5)));
+    for (let i=Math.ceil(juego.cantFichas/2);i<juego.cantFichas+2;i++){
+        let posy=(juego.espaciado/2)+Math.round(Math.random()*(juego.espaciado*(juego.filas-1.5)));
         juego.fichas.push(new Ficha(ctx, jugador2, juego.espaciado, posx2, posy, juego.imgs[1]));
     }
 }
@@ -218,4 +253,27 @@ function cargarImgs(){
                         }
                 }
         }
+}
+
+function timerfunc(){
+    let bloque=canvas.width/juego.tiempoJugada;
+    timer.width-=bloque;
+    timer.style.width=timer.width+"px";
+    if (timer.width<(canvas.width/3))
+        timer.style.backgroundColor="red";
+    if (timer.width<=0){
+        if (juego.fichaSelec!=null){
+            juego.fichas[juego.fichaSelec].setPosicion(juego.backupPos.x,juego.backupPos.y);
+            juego.backupPos=0;
+            juego.fichaSelec=null;
+            canvas.removeEventListener("mousemove", moverficha);
+            canvas.removeEventListener("mouseup", checkJugada);
+            cambiarJugador();
+            draw();
+        }
+        else{
+            cambiarJugador();
+            draw();
+        }
+    }
 }

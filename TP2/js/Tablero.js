@@ -38,7 +38,7 @@ class Tablero{
     }
     
     getPosicion(x,y){
-        return ({x:Math.floor(x/this.espaciado.horizontal)-1,y:Math.floor(y/this.espaciado.vertical)});
+        return ({x:Math.floor(x/this.espaciado)-1,y:Math.floor(y/this.espaciado)});
     }
     
     getPosJugada(x){
@@ -56,17 +56,17 @@ class Tablero{
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctx.fillStyle="#00FF006A";
         if (jugador==1){
-            ctx.fillRect(0,0,this.espaciado.horizontal,canvas.height);
+            ctx.fillRect(0,0,this.espaciado,canvas.height);
         }
         else{
-            ctx.fillRect(this.espaciado.horizontal*(this.columnas+1),0,this.espaciado.horizontal+10,canvas.height);
+            ctx.fillRect(this.espaciado*(this.columnas+1),0,this.espaciado+10,canvas.height);
         }
-        let esp=this.espaciado.horizontal;
+        let esp=this.espaciado;
         this.ctx.drawImage(this.imgfondo,esp,0,esp*this.columnas,esp*this.filas);
     }
 
     drawCover(){
-        let esp=this.espaciado.horizontal;
+        let esp=this.espaciado;
         for (let i=0;i<this.columnas;i++){
             for (let j=0;j<this.filas;j++){
                 this.ctx.drawImage(this.imgtapa,esp+(esp*i),esp*j,esp,esp);
@@ -83,14 +83,14 @@ class Tablero{
         ctx.strokeStyle = 'lightgrey';
         for (let i=0;i<=this.columnas+1;i++){
             ctx.beginPath();
-            ctx.moveTo(this.espaciado.horizontal+(this.espaciado.horizontal*i),0);
-            ctx.lineTo(this.espaciado.horizontal+(this.espaciado.horizontal*i),this.espaciado.vertical*this.filas);
+            ctx.moveTo(this.espaciado+(this.espaciado*i),0);
+            ctx.lineTo(this.espaciado+(this.espaciado*i),this.espaciado*this.filas);
             ctx.stroke();
         }
         for (let j=0;j<=this.filas;j++){
             ctx.beginPath();
-            ctx.moveTo(this.espaciado.horizontal,this.espaciado.vertical+(this.espaciado.vertical*j));
-            ctx.lineTo(this.espaciado.horizontal*this.columnas+this.espaciado.horizontal,this.espaciado.vertical+(this.espaciado.vertical*j));
+            ctx.moveTo(this.espaciado,this.espaciado+(this.espaciado*j));
+            ctx.lineTo(this.espaciado*this.columnas+this.espaciado,this.espaciado+(this.espaciado*j));
             ctx.stroke();
         }
     }
@@ -101,7 +101,7 @@ class Tablero{
         if (pos.x>=0&&pos.x<this.columnas){
             if (this.checkColumna(pos.x)){
                 let pintafila=this.getPosJugada(pos.x);
-                let space=this.espaciado.horizontal;
+                let space=this.espaciado;
                 context.beginPath();
                 context.arc(space+space*0.5+(space)*pintafila.x, space*0.5+space*pintafila.y, space*0.42, 0, 2 * Math.PI, false);
                 context.fillStyle = "#00FF006A";
@@ -231,27 +231,27 @@ class Tablero{
     dibujarTrofeo(jugador){
         if (jugador==1){
             ctx.fillStyle="lightgrey";
-            ctx.fillRect(this.espaciado.horizontal*(this.columnas+1),0,this.espaciado.horizontal+10,canvas.height);
-            ctx.drawImage(this.imgloose,this.espaciado.horizontal*(this.columnas+1),(this.espaciado.horizontal*this.filas)/2-this.espaciado.horizontal/2,this.espaciado.horizontal,this.espaciado.horizontal);
-            let grd = this.ctx.createLinearGradient(0, 0, this.espaciado.horizontal, this.espaciado.horizontal*this.filas);
+            ctx.fillRect(this.espaciado*(this.columnas+1),0,this.espaciado+10,canvas.height);
+            ctx.drawImage(this.imgloose,this.espaciado*(this.columnas+1),(this.espaciado*this.filas)/2-this.espaciado/2,this.espaciado,this.espaciado);
+            let grd = this.ctx.createLinearGradient(0, 0, this.espaciado, this.espaciado*this.filas);
             grd.addColorStop(0, "lightblue");
             grd.addColorStop(0.5, "white");
             grd.addColorStop(1, "lightblue");
             this.ctx.fillStyle=grd;
-            this.ctx.fillRect(0,0,this.espaciado.horizontal,canvas.height);
-            this.ctx.drawImage(this.imgtrofeo,0,(this.espaciado.horizontal*this.filas)/2-this.espaciado.horizontal/2,this.espaciado.horizontal,this.espaciado.horizontal);
+            this.ctx.fillRect(0,0,this.espaciado,canvas.height);
+            this.ctx.drawImage(this.imgtrofeo,0,(this.espaciado*this.filas)/2-this.espaciado/2,this.espaciado,this.espaciado);
         }
         else{
             ctx.fillStyle="lightgrey";
-            ctx.fillRect(0,0,this.espaciado.horizontal,canvas.height);
-            this.ctx.drawImage(this.imgloose,0,(this.espaciado.horizontal*this.filas)/2-this.espaciado.horizontal/2,this.espaciado.horizontal,this.espaciado.horizontal);
-            let grd = this.ctx.createLinearGradient(this.espaciado.horizontal*(this.columnas+1), 0, this.espaciado.horizontal*(this.columnas+2), this.espaciado.horizontal*this.filas);
+            ctx.fillRect(0,0,this.espaciado,canvas.height);
+            this.ctx.drawImage(this.imgloose,0,(this.espaciado*this.filas)/2-this.espaciado/2,this.espaciado,this.espaciado);
+            let grd = this.ctx.createLinearGradient(this.espaciado*(this.columnas+1), 0, this.espaciado*(this.columnas+2), this.espaciado*this.filas);
             grd.addColorStop(0, "lightblue");
             grd.addColorStop(0.5, "white");
             grd.addColorStop(1, "lightblue");
             this.ctx.fillStyle=grd;
-            ctx.fillRect(this.espaciado.horizontal*(this.columnas+1),0,this.espaciado.horizontal+10,canvas.height);
-            ctx.drawImage(this.imgtrofeo,this.espaciado.horizontal*(this.columnas+1),(this.espaciado.horizontal*this.filas)/2-this.espaciado.horizontal/2,this.espaciado.horizontal,this.espaciado.horizontal);
+            ctx.fillRect(this.espaciado*(this.columnas+1),0,this.espaciado+10,canvas.height);
+            ctx.drawImage(this.imgtrofeo,this.espaciado*(this.columnas+1),(this.espaciado*this.filas)/2-this.espaciado/2,this.espaciado,this.espaciado);
         }
     }
     pintarJugadaGanadora(fila, columna, jugador){
@@ -354,7 +354,7 @@ class Tablero{
 
     pintarCelda(fila, columna){
         let context=this.ctx;
-        let space=this.espaciado.horizontal;
+        let space=this.espaciado;
         context.beginPath();
         context.arc(space+space*0.5+(space)*columna, space*0.5+space*fila, space*0.42, 0, 2 * Math.PI, false);
         context.fillStyle = "#00FF00EE";
@@ -375,8 +375,8 @@ class Tablero{
 
     drawGris(){
         this.ctx.fillStyle="lightgrey";
-        this.ctx.fillRect(0,0,this.espaciado.horizontal,canvas.height);
-        this.ctx.fillRect(this.espaciado.horizontal*(this.columnas+1),0,this.espaciado.horizontal+10,canvas.height);
+        this.ctx.fillRect(0,0,this.espaciado,canvas.height);
+        this.ctx.fillRect(this.espaciado*(this.columnas+1),0,this.espaciado+10,canvas.height);
     }
 
 }
