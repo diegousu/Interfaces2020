@@ -31,16 +31,20 @@
         animation-iteration-count: infinite;
     }
 
+    .letraGrande{
+        font-size: 30px;
+    }
+
 </style>
 
 <body>
     <div class="centrado">
-        <fieldset id="tamTablero">
+        <fieldset class="letraGrande" id="tamTablero">
             <legend>Tamaño del tablero</legend>
-            <input type="number" name="" id="numFilas" value="6" min="4" max="8"><span>x</span>
-            <input type="number" name="" id="numColumnas" value="7" min="4" max="12">
+            <input class="letraGrande" type="number" name="" id="numFilas" value="6" min="4" max="8"><span>x</span>
+            <input class="letraGrande" type="number" name="" id="numColumnas" value="7" min="4" max="12">
         </fieldset>
-        <button id="btnIniciar">Iniciar Juego</button>
+        <button id="btnIniciar" style="font-size: large;">Iniciar Juego</button>
         <h2 id="turno" class="hinchable" style="display: inline;"></h2>
         </br>
         <canvas  id="canvas" class="hidden"></canvas>

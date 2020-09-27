@@ -7,9 +7,9 @@ class Ficha{
         this.posX=posX;
         this.posY=posY;
         this.img=img;
-        this.escalado=this.espaciado.horizontal*0.18;
+        this.escalado=this.espaciado*0.18;
         this.offset={x:0,y:0};
-        this.radio=(this.espaciado.horizontal/2)-(this.escalado/2);
+        this.radio=(this.espaciado/2)-(this.escalado/2);
     }
 
     getPosicion(){
@@ -34,7 +34,7 @@ class Ficha{
     }
 
     draw() {
-        this.ctx.drawImage(this.img,this.posX-this.radio,this.posY-this.radio, this.espaciado.horizontal-this.escalado,this.espaciado.vertical-this.escalado);
+        this.ctx.drawImage(this.img,this.posX-this.radio,this.posY-this.radio, this.espaciado-this.escalado,this.espaciado-this.escalado);
     }
     
     isSelected(x,y){

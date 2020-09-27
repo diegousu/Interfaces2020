@@ -27,15 +27,24 @@ let botoninicio=document.querySelector("#btnIniciar");
     
 function iniciarJuego(){
     if (cargaTerminada){
+        botoninicio.removeEventListener("click", iniciarJuego);
+        botoninicio.addEventListener("click", function(){location.reload()});
         let cantFilas=document.querySelector("#numFilas").value*1.0;
         let cantColumnas=document.querySelector("#numColumnas").value*1.0;
         document.querySelector("#tamTablero").classList.add("hidden");
         botoninicio.innerHTML="Reiniciar partida";
         canvas.classList.remove("hidden");
-        canvas.width=window.innerWidth*0.7;
-        let espacio=Math.floor(canvas.width/(cantColumnas+2));
-        canvas.height=espacio*cantFilas;
-        let espaciado={horizontal:espacio, vertical:espacio};
+        let espacio;
+        if (cantFilas<cantColumnas){
+            canvas.width=window.innerWidth*0.7;
+            espacio=Math.floor(canvas.width/(cantColumnas+2));
+            canvas.height=espacio*cantFilas;
+        }
+        else{
+            canvas.height=window.innerHeight*0.9;
+            espacio=Math.floor(canvas.height/cantFilas);
+            canvas.width=espacio*(cantColumnas+2)
+        }
         //"Instanciado" del juego
         theresawinner=false;
         theresatie=false;
@@ -45,11 +54,11 @@ function iniciarJuego(){
         juego.filas=cantFilas;
         juego.columnas=cantColumnas;
         juego.cantFichas=juego.columnas*juego.filas;
-        juego.espaciado=espaciado;
+        juego.espaciado=espacio;
         juego.tablero=new Tablero(juego.filas, juego.columnas, juego.espaciado, ctx, juego.imgs[2], juego.imgs[3], juego.imgs[4], juego.imgs[5]);
         canvas.addEventListener("mousedown", makeJugada);
         canvas.addEventListener("mousemove", actualizarPosMouse);
-        generarFichas(juego.espaciado.horizontal*0.5,1,canvas.width-(juego.espaciado.horizontal*0.5),2);
+        generarFichas(juego.espaciado*0.5,1,canvas.width-(juego.espaciado*0.5),2);
         draw();
     }
     else 
@@ -131,7 +140,7 @@ function checkJugada(){
     let jugada=juego.tablero.makeJugada(juego.mousePosX, juego.mousePosY, juego.jugador);
     if (jugada.exito){
         juego.fichas[juego.fichaSelec].setUsada();
-        let nuevapos={x:juego.espaciado.horizontal+juego.espaciado.horizontal/1.98+(jugada.x*juego.espaciado.horizontal), y:juego.espaciado.horizontal/1.98+(jugada.y)*(juego.espaciado.vertical)};
+        let nuevapos={x:juego.espaciado+juego.espaciado/1.98+(jugada.x*juego.espaciado), y:juego.espaciado/1.98+(jugada.y)*(juego.espaciado)};
         juego.fichas[juego.fichaSelec].setPosicion(nuevapos.x, nuevapos.y);
         if (juego.tablero.checkJugada(jugada.y,jugada.x,juego.jugador)){
             turno.innerHTML="¡Ganó Jugador "+juego.jugador+"!";
@@ -175,12 +184,12 @@ function actualizarPosMouse(e){
 function generarFichas(posx1, jugador1, posx2, jugador2){
     juego.fichas=new Array();
     for (let i=0;i<Math.ceil(juego.cantFichas/2);i++){
-        let posy=(juego.espaciado.vertical/2)+Math.round(Math.random()*(juego.espaciado.vertical*(juego.filas-1.5)));
+        let posy=(juego.espaciado/2)+Math.round(Math.random()*(juego.espaciado*(juego.filas-1.5)));
         juego.fichas.push(new Ficha(ctx, jugador1, juego.espaciado, posx1, posy, juego.imgs[0]));
     }
     
     for (let i=Math.ceil(juego.cantFichas/2);i<juego.cantFichas;i++){
-        let posy=(juego.espaciado.vertical/2)+Math.round(Math.random()*(juego.espaciado.vertical*(juego.filas-1.5)));
+        let posy=(juego.espaciado/2)+Math.round(Math.random()*(juego.espaciado*(juego.filas-1.5)));
         juego.fichas.push(new Ficha(ctx, jugador2, juego.espaciado, posx2, posy, juego.imgs[1]));
     }
 }
