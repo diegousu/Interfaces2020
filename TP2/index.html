@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPE2 - Emboca 4</title>
+</head>
+<style>
+    .hidden{
+        display: none;
+    }
+    .centrado{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -48%);
+    }
+
+    @keyframes resaltado{
+        0%{letter-spacing: 0em;}
+        50%{letter-spacing: 0.2em;}
+        100%{letter-spacing: 0em;}
+    }
+
+    .hinchable{
+
+        text-align: center;
+        animation-name: resaltado;
+        transition:font-weight 1.5s ease-out;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+    }
+
+</style>
+
+<body>
+    <div class="centrado">
+        <fieldset id="tamTablero">
+            <legend>Tamaño del tablero</legend>
+            <input type="number" name="" id="numFilas" value="6" min="4" max="8"><span>x</span>
+            <input type="number" name="" id="numColumnas" value="7" min="4" max="12">
+        </fieldset>
+        <button id="btnIniciar">Iniciar Juego</button>
+        <h2 id="turno" class="hinchable" style="display: inline;"></h2>
+        </br>
+        <canvas  id="canvas" class="hidden"></canvas>
+    </div>
+</body>
+<script src="js/Ficha.js"></script>
+<script src="js/Tablero.js"></script>
+<script src="js/main.js"></script>
+</html>
