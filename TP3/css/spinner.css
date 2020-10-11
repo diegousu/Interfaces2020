@@ -4,7 +4,7 @@
     height:80%;
     left: 33%;
     top:10%;
-    background-image: url("/img/Kill katana.jpg");
+    background-image: url("img/Kill katana.jpg");
     background-repeat: no-repeat;
 }
 
@@ -37,6 +37,6 @@
 }
 
 @keyframes caida{
-    0%{background-image: url("/img/blood/4.png");}
-    100%{background-image: url("/img/blood/5.png");}
+    0%{background-image: url("img/blood/4.png");}
+    100%{background-image: url("img/blood/5.png");}
 }

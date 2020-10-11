@@ -22,24 +22,24 @@
 }
 
 #portada>.layer1{
-    background-image: url("../res/anima/fondo.png");
+    background-image: url("res/anima/fondo.png");
     background-size: cover;
 }
 
 #portada>.layer2{
-    background-image: url("../res/anima/luna.png");
+    background-image: url("res/anima/luna.png");
     background-repeat: no-repeat;
     background-size: 60px;
     animation: pasajeLuna 120s linear infinite;
 }
 
 #portada>.layer3{
-    background-image: url("../res/anima/orenbeatrix.png");
+    background-image: url("res/anima/orenbeatrix.png");
     background-repeat: no-repeat;
 }
 
 #portada>.layer4{
-    background-image: url("../res/anima/nievemedia.png");
+    background-image: url("res/anima/nievemedia.png");
     background-repeat: repeat-y;
     animation: caidaNieve 30s linear infinite;
 }
