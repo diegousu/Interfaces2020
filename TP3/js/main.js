@@ -9,6 +9,8 @@ setSpinner(1000,"portada");
 document.querySelector("#link1").addEventListener("click", function(){setSpinner(500, "portada")});
 document.querySelector("#link2").addEventListener("click", function(){setSpinner(500, "acordeon")});
 document.querySelector("#link3").addEventListener("click", function(){setSpinner(500, "slider")});
+document.querySelector("#link4").addEventListener("click", function(){});
+document.querySelector("#link5").addEventListener("click", function(){});
 //
 
 function setSpinner(time, dest){
