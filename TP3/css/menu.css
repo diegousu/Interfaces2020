@@ -1,0 +1,11 @@
+nav{
+    position: fixed;
+    left:0;
+    top:0;
+    z-index: 5;
+}
+
+nav>a{
+    text-decoration: none;
+    display: block;
+}

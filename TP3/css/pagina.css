@@ -1,0 +1,88 @@
+.pagina{
+    color:yellow;
+    height: 4096px;
+    width:99vw;
+}
+
+#portada{
+    border:1px solid yellow;
+    text-align: center;
+    position: relative;
+    top:0;
+    min-height: 800px;
+    padding-left: 12%;
+    width: 99vw;
+}
+
+#portada * {
+    width:99vw;
+    height:800px;
+    top:0;
+    position: absolute;
+}
+
+#portada>.layer1{
+    background-image: url("../res/anima/fondo.png");
+    background-size: cover;
+}
+
+#portada>.layer2{
+    background-image: url("../res/anima/luna.png");
+    background-repeat: no-repeat;
+    background-size: 60px;
+    animation: pasajeLuna 120s linear infinite;
+}
+
+#portada>.layer3{
+    background-image: url("../res/anima/orenbeatrix.png");
+    background-repeat: no-repeat;
+}
+
+#portada>.layer4{
+    background-image: url("../res/anima/nievemedia.png");
+    background-repeat: repeat-y;
+    animation: caidaNieve 30s linear infinite;
+}
+
+@keyframes caidaNieve{
+    0%{background-position-y: 0;}
+    50%{background-position-x: 50px;}
+    100%{background-position-y: 800px;
+        background-position-x: -50px;
+        opacity: 0.2;}
+}
+
+@keyframes pasajeLuna{
+    0%{background-position-x: -10px;
+        background-position-y: 300px;}
+    100%{background-position-x: 1400px;}
+}
+
+.pagina>#acordeon{
+    margin-top: 10%;
+    margin-left: -120%;
+    width: 1040px;
+    /* border:1px solid yellow; */
+    text-align: center;
+    height: 600px;
+    
+}
+.pagina>#acordeon>img{
+    filter: sepia(100%) contrast(80%);
+    transition: filter .2s ease-out;
+}
+
+.pagina>#acordeon>img:hover{
+    filter: none;
+    transition: filter .2s ease-in;
+}
+
+
+.pagina>#slider{
+    border:1px solid yellow;
+    text-align: center;
+    margin-left: 100%;
+    margin-top: 10%;
+    height: 800px;
+    width: calc(99vw);
+}
