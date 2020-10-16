@@ -5,8 +5,17 @@ nav{
     z-index: 5;
 }
 
-nav>a{
-    text-decoration-style: none;
+nav>.menu>a{
+    color:yellow;
+    text-decoration: none;
     display: block;
+    font-weight: bolder;
+    font-size: larger;
+    transition:color .2s linear;
+}
 
+nav>.menu>a:hover{
+    color:red;
+    background-color: #FFF7;
+    border-radius: 5px;
 }
