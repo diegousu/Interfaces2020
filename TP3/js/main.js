@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
+let posCarru=1;
 let page=document.querySelector(".pagina");
 let acordeon=document.querySelector("#acordeon");
 let slider=document.querySelector("#slider");
@@ -6,7 +7,28 @@ let portada=document.querySelector("#portada");
 document.querySelector("#menu").addEventListener("click", function(){
     document.querySelector(".menu").classList.toggle("oculto");
     });
-setSpinner(400,"portada");
+setSpinner(400,"slider");
+setInterval(countDown,2000);
+
+function countDown(){
+    let actual=new Date();
+    let futura=new Date(2020,11,25);
+    let result=timeLeft(futura-actual);
+    regresiva.innerHTML=`Faltan ${result.dias}días ${result.horas}hr ${result.minutos}min ${result.segundos}seg para el estreno`;
+}
+
+function timeLeft(d) {
+    let dias=d/(24* 60 * 60 * 1000);
+    d=d%(24* 60 * 60 * 1000);
+    let horas=d/(60 * 60 * 1000);
+    d=d%(60 * 60 * 1000);
+    let minutos=d/(60*1000);
+    d=d%(60*1000);
+    let segundos=d/(1000);
+    return {dias:Math.floor(dias), horas: Math.floor(horas), minutos:Math.floor(minutos), segundos: Math.floor(segundos)};
+}
+
+
 
 //variables de layers
 let l1=document.querySelector("#layer1");
@@ -21,17 +43,38 @@ let l9=document.querySelector("#layer9");
 let l6b=document.querySelector("#layer6b");
 let l6c=document.querySelector("#layer6c");
 let l6d=document.querySelector("#layer6d");
+let regresiva=document.querySelector("#countdown");
+let cLay1=document.querySelector("#Clayer1");
+let cLay2=document.querySelector("#Clayer2");
+let cLay3=document.querySelector("#Clayer3");
+
 
 //listeners
 document.querySelector("#link1").addEventListener("click", function(){setSpinner(500, "portada")});
 document.querySelector("#link2").addEventListener("click", function(){setSpinner(500, "acordeon")});
 document.querySelector("#link3").addEventListener("click", function(){setSpinner(500, "slider")});
 
+document.querySelector("#next").addEventListener("click", function(){moverCarrusel(1)});
+document.querySelector("#prev").addEventListener("click", function(){moverCarrusel(-1)});
 
-//Zona de prueba
-let d1=document.querySelector("#data1");
-let d2=document.querySelector("#data2");
-//
+//funciones de hover para las img
+for(let i=0;i<acordeon.childElementCount;i++){
+    acordeon.children[i].addEventListener("mousemove",function(e){
+        let x=e.layerX;
+        let y=e.layerY;
+        let yRotation = 20 * ((x - this.width / 2) / this.width)
+        let xRotation = -20 * ((y - this.height / 2) / this.height)
+        let string='perspective(500px) scale(1.02) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)';
+        this.style.transform=string;
+        this.style.border="2px solid white";
+    });
+    acordeon.children[i].addEventListener("mouseleave",function(){
+        let string="perspective(0) scale(1) rotateX(0deg) rotateY(0deg)";
+        this.style.transform=string;
+        this.style.border="";
+    });
+}
+
 
 function setSpinner(time, dest){
     document.querySelector(".spinner").classList.remove("oculto");
@@ -42,7 +85,6 @@ function setSpinner(time, dest){
     sangre.style.animation="fillPool "+time/1000+"s linear";
     setTimeout(function(){loadPage(dest)}, time);
 }
-
 
 function loadPage(dest){//dest es el ID del elemento a saltar
     document.querySelector(".spinner").classList.add("oculto");
@@ -77,6 +119,7 @@ function animarPortada(scroll){
         portada.removeEventListener("mousemove", animarKillBill);
         l8.style.animation="";
     }
+    regresiva.style.visibility="hidden";
     portada.style.position="sticky";
     portada.style.top="0";
     l1.style.opacity=1;
@@ -123,7 +166,6 @@ function animarPortada(scroll){
             //portada.style.transition="opacity 1s linear";
         if (scroll>600){//trans a title con fondo amarillo
             l6d.style.visibility="visible";
-            l6.style.animationPlayState= "running";
             l8.style.transform="";
             l9.style.transform="";
             portada.style.backgroundColor="yellow";
@@ -132,7 +174,9 @@ function animarPortada(scroll){
             portada.style.transition="";
             portada.addEventListener("mousemove", animarKillBill)
         }
-        if (scroll>700){//Animación sangrienta de título
+        if (scroll>700){//Animación sangrienta con countdown
+            l6b.style.visibility="hidden";
+            l6c.style.visibility="hidden";
             l6d.style.visibility="hidden";
             l3.style.visibility="visible";
             l4.style.visibility="visible";
@@ -140,6 +184,7 @@ function animarPortada(scroll){
             l3.style.filter="invert(100%)";
             l4.style.filter="invert(100%)";
             portada.style.backgroundColor="black";
+            regresiva.style.visibility="visible";
             l6.style.opacity=1;
             l5.style.opacity=1;
             l4.style.opacity=1;
@@ -152,9 +197,8 @@ function animarPortada(scroll){
 
 function animarKillBill(e){
     l6d.style.visibility="hidden";
+    l6d.style.opacity="0";
     let posx=((e.clientX-portada.offsetLeft)*0.012);let posy=e.clientY*0.05-20;
-    d1.innerHTML="X:"+posx;
-    d2.innerHTML="Y:"+posy;
     l8.style.transform="translateY("+posx*(-1)+"px)";
     l9.style.transform="translateY("+posx+"px)";
     if (posx>12){
@@ -171,7 +215,7 @@ function animarKillBill(e){
 function animarAcordeon(scroll){
     acordeon.style.top=scroll+25+"px";
     if (scroll>1100){
-        acordeon.style.marginLeft=(0.2*scroll)-200+"%";
+        acordeon.style.marginLeft=(scroll*0.28)-314+"%";
     }
 }
 
@@ -200,6 +244,23 @@ function checkVisible(sy){
         portada.style.opacity="0";
         acordeon.style.opacity="0";
     }
+}
+
+function moverCarrusel(pos){
+    posCarru+=pos;
+    if (posCarru==0)
+        posCarru=6;
+    if (posCarru==7)
+        posCarru=1;
+    let sig=posCarru+1;
+        if (sig==7)
+            sig=1;
+    let ant=posCarru-1;
+    if (ant==0)
+        ant=6;
+    cLay1.style.backgroundImage=`url(../img/carrusel/${ant}.jpg)`;
+    cLay2.style.backgroundImage=`url(../img/carrusel/${posCarru}.jpg)`;
+    cLay3.style.backgroundImage=`url(../img/carrusel/${sig}.jpg)`;
 }
 
 });

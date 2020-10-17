@@ -3,8 +3,17 @@ nav{
     left:0;
     top:0;
     z-index: 5;
+    margin: 5px
+}
+nav>img{
+    opacity: .7;
 }
 
+nav>img:hover{
+    background-color: #fff8;
+    opacity:1;
+    border-radius: 5px;;
+}
 nav>.menu>a{
     color:yellow;
     text-decoration: none;
@@ -12,6 +21,10 @@ nav>.menu>a{
     font-weight: bolder;
     font-size: larger;
     transition:color .2s linear;
+}
+
+.menu:active{
+    background-color:black;
 }
 
 nav>.menu>a:hover{

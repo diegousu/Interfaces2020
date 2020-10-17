@@ -196,35 +196,105 @@
     opacity:0;
 }
 
+#portada>#countdown{
+    top:700px;
+    left: 10%;
+    text-align: center;
+    font-size: 50px;
+    animation: cuentareg 2s linear infinite;
+    visibility: visible;
+    perspective: 500px;
+}
+
+@keyframes cuentareg{
+    0%{color: yellow;
+        transform: rotateY(20deg);}
+    50%{color:red;
+        transform: rotateY(0deg)}
+    100%{color: yellow;
+        transform: rotateY(-20deg)}
+}
+
 .pagina>#acordeon{
     position: absolute;
     top:2800px;
-    /* margin-right: -120%; */
-    width: 1040px;
-    margin-left:20%;
-    border:1px solid yellow;
+    width: calc(90vw);
     text-align: center;
     height: 600px;
     transition: opacity 1s linear;
+    left: 5%;
 }
 .pagina>#acordeon>img{
+    margin-right: "10px";
     filter: sepia(100%) contrast(80%);
     transition: filter .2s ease-out;
+    transition: transform .1s;
+    border-radius: 10px;
 }
 
 .pagina>#acordeon>img:hover{
     filter: none;
-    transition: filter .2s ease-in;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 
 .pagina>#slider{
     position: absolute;
     top:2500px;
-    border:1px solid yellow;
     text-align: center;
     height: 800px;
     width: calc(90vw);
     margin-left: 5%;
     margin-right: 5%;
+    overflow: hidden;
+}
+.pagina>#slider>#prev, #next{
+    position: relative;
+    background-size: cover;
+    opacity: .5;
+    top:650px;
+    height: 100px;
+    width: 100px;
+}
+
+.pagina>#slider>#prev:hover,#next:hover{
+    opacity: 1;
+}
+
+.pagina>#slider>#prev{
+    left:2vw;
+    background-image: url("../img/carrusel/prev.png");
+}
+.pagina>#slider>#next{
+    top:550px;
+    left:calc(82vw);
+    background-image: url("../img/carrusel/next.png");
+}
+
+.pagina>#slider>#Clayer1, #Clayer2, #Clayer3{
+    position: absolute;
+    top:0;
+    left:26%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-y: 50%;
+    height: 800px;
+    width:800px;
+    transition:transform .5s linear;
+}
+.pagina>#slider>#Clayer2{
+    background-image: url("../img/carrusel/1.jpg");
+}
+
+.pagina>#slider>#Clayer1{
+    left: -14%;
+    transform: perspective(600px) scale(0.6) rotateY(-28deg);
+    background-image: url("../img/carrusel/6.jpg");  
+}
+
+.pagina>#slider>#Clayer3{
+    left:66.1%;
+    transform: perspective(600px) scale(.6) rotateY(28deg);
+    background-image: url("../img/carrusel/2.jpg");   
 }
