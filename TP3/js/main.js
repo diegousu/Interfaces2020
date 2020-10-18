@@ -329,9 +329,9 @@ function moverCarrusel(pos){
     let ant=posCarru-1;
     if (ant==0)
         ant=6;
-    cLay1.style.backgroundImage=`url(../img/carrusel/${ant}.jpg)`;
-    cLay2.style.backgroundImage=`url(../img/carrusel/${posCarru}.jpg)`;
-    cLay3.style.backgroundImage=`url(../img/carrusel/${sig}.jpg)`;
+    cLay1.style.backgroundImage=`url(./img/carrusel/${ant}.jpg)`;
+    cLay2.style.backgroundImage=`url(./img/carrusel/${posCarru}.jpg)`;
+    cLay3.style.backgroundImage=`url(./img/carrusel/${sig}.jpg)`;
 }
 
 });
