@@ -1,6 +1,6 @@
 .pagina{
     color:yellow;
-    height: 4096px;
+    height: 3000px;
     width:99vw;
 }
 
@@ -69,8 +69,6 @@
     animation: nube 40s infinite linear; 
     transition: filter 2s linear;
 }
-
-
 @keyframes nube{
     0%{background-position-x: -1200px;}
     100%{background-position-x: 1300px;}
@@ -82,6 +80,7 @@
     background-repeat: no-repeat;
     width: 100%;
 }
+
 #portada>#layer6{
     background-image: url("../img/anima/tumbleweed.png");
     background-size:100%;
@@ -123,7 +122,6 @@
     opacity:.7;
     animation: ruedita 1.5s infinite ease-out;
 }
-
 @keyframes ruedita{
     0%{top:600px;}
     50%{top:610px;}
@@ -141,7 +139,6 @@
     opacity:.7;
     animation:mousemove 1.5s linear infinite;
 }
-
 @keyframes mousemove{
     0%{background-image: url("../img/mousemove/mouse2.png");}
     20%{background-image: url("../img/mousemove/mouse3.png");}
@@ -150,8 +147,6 @@
     80%{background-image: url("../img/mousemove/mouse6.png");}
     100%{background-image: url("../img/mousemove/mouse1.png");}
 }
-
-
 
 #portada>#layer7{
     background-image: url("../img/anima/gang.png");
@@ -175,7 +170,6 @@
     opacity:0;
     /* transition: transform .5s linear; */
 }
-
 @keyframes bloodyKill{
     0%{background-image: url("../img/anima/killup1.png");}
     16.6%{background-image: url("../img/anima/killup2.png");}
@@ -205,7 +199,6 @@
     visibility: visible;
     perspective: 500px;
 }
-
 @keyframes cuentareg{
     0%{color: yellow;
         transform: rotateY(20deg);}
@@ -215,7 +208,7 @@
         transform: rotateY(-20deg)}
 }
 
-.pagina>#acordeon{
+.pagina>#cards{
     position: absolute;
     top:2800px;
     width: calc(90vw);
@@ -224,7 +217,8 @@
     transition: opacity 1s linear;
     left: 5%;
 }
-.pagina>#acordeon>img{
+
+.pagina>#cards>img{
     margin-right: "10px";
     filter: sepia(100%) contrast(80%);
     transition: filter .2s ease-out;
@@ -232,12 +226,11 @@
     border-radius: 10px;
 }
 
-.pagina>#acordeon>img:hover{
+.pagina>#cards>img:hover{
     filter: none;
     margin-left: 5px;
     margin-right: 5px;
 }
-
 
 .pagina>#slider{
     position: absolute;
@@ -249,6 +242,7 @@
     margin-right: 5%;
     overflow: hidden;
 }
+
 .pagina>#slider>#prev, #next{
     position: relative;
     background-size: cover;
@@ -275,7 +269,6 @@
 .pagina>#slider>#Clayer1, #Clayer2, #Clayer3{
     position: absolute;
     top:0;
-    left:26%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position-y: 50%;
@@ -284,9 +277,9 @@
     transition:transform .5s linear;
 }
 .pagina>#slider>#Clayer2{
+    left:26%;
     background-image: url("../img/carrusel/1.jpg");
 }
-
 .pagina>#slider>#Clayer1{
     left: -14%;
     transform: perspective(600px) scale(0.6) rotateY(-28deg);
@@ -298,3 +291,69 @@
     transform: perspective(600px) scale(.6) rotateY(28deg);
     background-image: url("../img/carrusel/2.jpg");   
 }
+
+.pagina>#calendar{
+    position: absolute;
+    top:2800px;
+    height: 800px;
+    width: calc(90vw);
+    margin-left: 5%;
+    margin-right: 5%;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+details{
+    height:100px;
+    transition: height 1s;
+    text-decoration: none;
+    margin:22px;
+}
+
+details .hoja{
+    opacity: 0;
+    transition: opacity 1s;
+    text-align: center;
+}
+details[open]{
+  height:700px;
+  background: linear-gradient(rgb(0, 0, 0) 0%, rgba(0,0,0,1) 80%, rgba(242, 255, 0, 0.52) 100%);
+  border-radius: 20px;
+}
+
+details[open] .hoja{
+    opacity:100;
+}
+details>summary{
+    left:0;
+    background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgba(0,0,0,1) 53%,  rgba(242, 255, 0, 0.52) 100%);
+    display: flex;
+}
+details>summary:hover{
+    border:1px solid yellow;
+}
+details>summary>img{
+    width: 80px;
+    height: 100px;
+    margin: 10px;
+    border-radius: 10px;
+}
+.pagina>#comentarios{
+    position: absolute;
+    top:3500px;
+    text-align: center;
+    height: 800px;
+    width: calc(90vw);
+    margin-left: 5%;
+    margin-right: 5%;
+    overflow: hidden;
+    border:1px solid yellow;
+}
+
+details > summary {
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  

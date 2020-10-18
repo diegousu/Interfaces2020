@@ -14,7 +14,7 @@ nav>img:hover{
     opacity:1;
     border-radius: 5px;;
 }
-nav>.menu>a{
+nav>.menu>.link{
     color:yellow;
     text-decoration: none;
     display: block;
@@ -23,8 +23,18 @@ nav>.menu>a{
     transition:color .2s linear;
 }
 
-.menu:active{
-    background-color:black;
+.LessImportant{
+    margin-left: 10px;
+    color:yellow;
+    font-weight: lighter;
+    font-size: medium;
+    text-decoration: none;
+    display: block;
+}
+
+.menu:hover{
+    background-color:rgba(0, 0, 0, .7);
+    border-radius: 5px;
 }
 
 nav>.menu>a:hover{

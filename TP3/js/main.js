@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", function(){
 let posCarru=1;
 let page=document.querySelector(".pagina");
-let acordeon=document.querySelector("#acordeon");
+let cards=document.querySelector("#cards");
 let slider=document.querySelector("#slider");
 let portada=document.querySelector("#portada");
+let calendar=document.querySelector("#calendar");
+let comentarios=document.querySelector("#comentarios");
 document.querySelector("#menu").addEventListener("click", function(){
     document.querySelector(".menu").classList.toggle("oculto");
     });
-setSpinner(400,"slider");
+setSpinner(400,"calendar");
 setInterval(countDown,2000);
 
 function countDown(){
@@ -51,15 +53,17 @@ let cLay3=document.querySelector("#Clayer3");
 
 //listeners
 document.querySelector("#link1").addEventListener("click", function(){setSpinner(500, "portada")});
-document.querySelector("#link2").addEventListener("click", function(){setSpinner(500, "acordeon")});
+document.querySelector("#link2").addEventListener("click", function(){setSpinner(500, "cards")});
 document.querySelector("#link3").addEventListener("click", function(){setSpinner(500, "slider")});
+document.querySelector("#link4").addEventListener("click", function(){setSpinner(500, "calendar")});
+document.querySelector("#link5").addEventListener("click", function(){setSpinner(500, "comentarios")});
 
 document.querySelector("#next").addEventListener("click", function(){moverCarrusel(1)});
 document.querySelector("#prev").addEventListener("click", function(){moverCarrusel(-1)});
 
 //funciones de hover para las img
-for(let i=0;i<acordeon.childElementCount;i++){
-    acordeon.children[i].addEventListener("mousemove",function(e){
+for(let i=0;i<cards.childElementCount;i++){
+    cards.children[i].addEventListener("mousemove",function(e){
         let x=e.layerX;
         let y=e.layerY;
         let yRotation = 20 * ((x - this.width / 2) / this.width)
@@ -68,7 +72,7 @@ for(let i=0;i<acordeon.childElementCount;i++){
         this.style.transform=string;
         this.style.border="2px solid white";
     });
-    acordeon.children[i].addEventListener("mouseleave",function(){
+    cards.children[i].addEventListener("mouseleave",function(){
         let string="perspective(0) scale(1) rotateX(0deg) rotateY(0deg)";
         this.style.transform=string;
         this.style.border="";
@@ -91,10 +95,14 @@ function loadPage(dest){//dest es el ID del elemento a saltar
     page.classList.remove("oculto");
     document.addEventListener("scroll", scrollea);
     let nivScroll=0;
-    if (dest=="acordeon")
+    if (dest=="cards")
         nivScroll=1101;
     if (dest=="slider")
         nivScroll=1500;
+    if (dest=="calendar")
+        nivScroll=1700;
+    if (dest=="comentarios")
+        nivScroll=1900;
     window.scrollTo(0,nivScroll);
     scrollea();
 }
@@ -108,20 +116,24 @@ function scrollea(){
         return;
     }
     if (nivScroll<1500){
-        animarAcordeon(nivScroll);
+        animarcards(nivScroll);
     }
     if (nivScroll>1300)
         animarSlider(nivScroll);
+    if (nivScroll>1500)
+        animarCalendar(nivScroll);
+    if (nivScroll>1800)
+        animarComents(nivScroll);
 }    
 //#region animacion_portada
 function animarPortada(scroll){
     if (scroll<700){
         portada.removeEventListener("mousemove", animarKillBill);
         l8.style.animation="";
+        portada.style.left=0;
     }
     regresiva.style.visibility="hidden";
-    portada.style.position="sticky";
-    portada.style.top="0";
+    portada.style.top=scroll+"px";
     l1.style.opacity=1;
     l2.style.opacity=1;
     l3.style.visibility="visible";
@@ -192,6 +204,9 @@ function animarPortada(scroll){
             l2.style.opacity=1;
             l1.style.opacity=1;
         }
+        if (scroll>800){
+            portada.style.left=scroll*0.5-406+"%";
+        }
     }
 }
 
@@ -212,37 +227,93 @@ function animarKillBill(e){
 }
 //#endregion animacion_portada
 
-function animarAcordeon(scroll){
-    acordeon.style.top=scroll+25+"px";
+function animarcards(scroll){
+    cards.style.top=scroll+25+"px";
     if (scroll>1100){
-        acordeon.style.marginLeft=(scroll*0.28)-314+"%";
+        cards.style.marginLeft=(scroll*0.28)-314+"%";
     }
 }
 
 function animarSlider(scroll){
     if (scroll<1500)
         slider.style.top=(-3*scroll)+6000+"px";
-    else slider.style.top=scroll+20+"px";
+    else{
+        slider.style.top=scroll+"px";
+        slider.style.left="0%";
+    }    
+    if (scroll>1550 && scroll<1700){
+        slider.style.left=(scroll*0.8)-1240+"%";
+    }
+}
+
+function animarCalendar(scroll){
+    if (scroll<1700)
+        calendar.style.top=(-8*scroll)+15300+"px";
+    else{
+        calendar.style.top=scroll+25+"px";
+        calendar.style.left="0%";
+    }
+    if (scroll>1750 && scroll<1900){
+        calendar.style.left=(scroll*0.8)-1400+"%";
+    }
+}
+
+function animarComents(scroll){
+    if (scroll<1900)
+        comentarios.style.top=(-11*scroll)+22800+"px";
+    else{
+        comentarios.style.top=scroll+25+"px";
+    }
 }
 
 function checkVisible(sy){
     if (sy<1000){//portada
         portada.style.opacity="1";
-        acordeon.style.opacity="0";
+        cards.style.opacity="0";
         slider.style.opacity="0";
+        calendar.style.opacity="0";
+        comentarios.style.opacity="0";
     }
-    if (sy<1500&&sy>=1000){//acordeon
+    if (sy<1500&&sy>=1000){//cards
         portada.style.transition="opacity ease-out 1s";
         portada.style.opacity="0";
-        acordeon.style.opacity="1";
+        cards.style.opacity="1";
         slider.style.opacity="0";
+        calendar.style.opacity="0";
+        comentarios.style.opacity="0";
         if (sy>1300)
             slider.style.opacity="1";    
     }
     if (sy>=1500){//slider
         slider.style.opacity="1";    
         portada.style.opacity="0";
-        acordeon.style.opacity="0";
+        cards.style.opacity="0";
+        calendar.style.opacity="0";
+        if (sy>1600)
+            calendar.style.opacity="1";
+    }
+    if (sy>=1700){//Calendar
+        slider.style.opacity="0";    
+        portada.style.opacity="0";
+        cards.style.opacity="0";
+        calendar.style.opacity="1";
+        comentarios.style.opacity="0";
+        if (sy>1800)
+            comentarios.style.opacity="1";
+    }
+    if (sy>=1900){//comments
+        slider.style.opacity="0";    
+        portada.style.opacity="0";
+        cards.style.opacity="0";
+        calendar.style.opacity="0";
+        comentarios.style.opacity="1";
+    }
+    if (sy>2040){
+        slider.style.opacity="0";    
+        portada.style.opacity="0";
+        cards.style.opacity="0";
+        calendar.style.opacity="0";
+        comentarios.style.opacity="0";
     }
 }
 
