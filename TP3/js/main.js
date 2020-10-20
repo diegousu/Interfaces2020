@@ -30,8 +30,6 @@ function timeLeft(d) {
     return {dias:Math.floor(dias), horas: Math.floor(horas), minutos:Math.floor(minutos), segundos: Math.floor(segundos)};
 }
 
-
-
 //variables de layers
 let l1=document.querySelector("#layer1");
 let l2=document.querySelector("#layer2");
@@ -60,6 +58,9 @@ document.querySelector("#link5").addEventListener("click", function(){setSpinner
 
 document.querySelector("#next").addEventListener("click", function(){moverCarrusel(1)});
 document.querySelector("#prev").addEventListener("click", function(){moverCarrusel(-1)});
+let enviar=document.querySelector("#btnEnviar");
+    enviar.addEventListener("click", animarForm);
+document.querySelector("#btnOtro").addEventListener("click",nuevoMensaje);
 
 //funciones de hover para las Cards
 let pers=document.querySelector("#personaje");
@@ -130,7 +131,7 @@ function loadPage(dest){//dest es el ID del elemento a saltar
 
 function scrollea(){
     let nivScroll=window.scrollY;
-    //document.title=nivScroll;
+    document.title=nivScroll;
     checkVisible(nivScroll);
     if (nivScroll<1000){
         animarPortada(nivScroll);
@@ -281,15 +282,49 @@ function animarCalendar(scroll){
 }
 
 function animarComents(scroll){
+    
     if (scroll<1900){
         comentarios.style.top=(-11*scroll)+22800+"px";
-        let giro=(9*scroll)-16200;
+        let giro=(3.6*scroll)-6480;
         comentarios.style.transform=`rotateZ(${giro}deg)`;
     }
     else{
         comentarios.style.transform=`rotateZ(0deg)`;
         comentarios.style.top=scroll+25+"px";
     }
+}
+
+function animarForm(){
+    for (let i=1; i<comentarios.children[0].children.length;i+=2){
+        comentarios.children[0].children[i].style.transition="margin-left 1s";    
+        comentarios.children[0].children[i].style.marginLeft="-150%";
+
+    }
+    for (let i=2; i<comentarios.children[0].children.length;i+=2){
+        comentarios.children[0].children[i].style.transition="margin-left 1s";    
+        comentarios.children[0].children[i].style.marginLeft="150%";
+    }
+    setTimeout(function(){
+        let enviado=document.querySelector(".sentSucces");
+        enviado.style.display="block";
+        enviado.style.marginLeft="33%";
+        enviado.style.top="25%";
+    }, 500);
+}
+
+function nuevoMensaje(){
+    for (let i=1; i<comentarios.children[0].children.length;i+=2){
+        comentarios.children[0].children[i].style.marginLeft="0%";
+    }
+    for (let i=2; i<comentarios.children[0].children.length;i+=2){
+        comentarios.children[0].children[i].style.marginLeft="0%";
+    }
+    let enviado=document.querySelector(".sentSucces");
+    enviado.style.display="none";
+    setTimeout(function(){
+        for (let i=1; i<comentarios.children[0].children.length;i++)
+            comentarios.children[0].children[i].style.transition="font-size .4s linear";
+    }, 1000);
 }
 
 function checkVisible(sy){
@@ -364,7 +399,7 @@ function checkVisible(sy){
         comentarios.style.opacity="1";
         comentarios.style.display="block";
     }
-    if (sy>2040){
+    if (sy>2200){
         slider.style.opacity="0";
         slider.style.display="none";
         portada.style.opacity="0";
