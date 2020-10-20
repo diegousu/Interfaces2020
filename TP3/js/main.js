@@ -131,7 +131,7 @@ function loadPage(dest){//dest es el ID del elemento a saltar
 
 function scrollea(){
     let nivScroll=window.scrollY;
-    document.title=nivScroll;
+    //document.title=nivScroll;
     checkVisible(nivScroll);
     if (nivScroll<1000){
         animarPortada(nivScroll);
