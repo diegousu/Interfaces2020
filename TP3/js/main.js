@@ -9,8 +9,8 @@ let comentarios=document.querySelector("#comentarios");
 document.querySelector("#menu").addEventListener("click", function(){
     document.querySelector(".menu").classList.toggle("oculto");
     });
-setSpinner(400,"calendar");
-setInterval(countDown,2000);
+setSpinner(3000,"portada");
+setInterval(countDown,1000);
 
 function countDown(){
     let actual=new Date();
@@ -52,17 +52,18 @@ let cLay3=document.querySelector("#Clayer3");
 
 
 //listeners
-document.querySelector("#link1").addEventListener("click", function(){setSpinner(500, "portada")});
-document.querySelector("#link2").addEventListener("click", function(){setSpinner(500, "cards")});
-document.querySelector("#link3").addEventListener("click", function(){setSpinner(500, "slider")});
-document.querySelector("#link4").addEventListener("click", function(){setSpinner(500, "calendar")});
-document.querySelector("#link5").addEventListener("click", function(){setSpinner(500, "comentarios")});
+document.querySelector("#link1").addEventListener("click", function(){setSpinner(3000, "portada")});
+document.querySelector("#link2").addEventListener("click", function(){setSpinner(3000, "cards")});
+document.querySelector("#link3").addEventListener("click", function(){setSpinner(3000, "slider")});
+document.querySelector("#link4").addEventListener("click", function(){setSpinner(3000, "calendar")});
+document.querySelector("#link5").addEventListener("click", function(){setSpinner(3000, "comentarios")});
 
 document.querySelector("#next").addEventListener("click", function(){moverCarrusel(1)});
 document.querySelector("#prev").addEventListener("click", function(){moverCarrusel(-1)});
 
-//funciones de hover para las img
-for(let i=0;i<cards.childElementCount;i++){
+//funciones de hover para las Cards
+let pers=document.querySelector("#personaje");
+for(let i=1;i<cards.childElementCount;i++){
     cards.children[i].addEventListener("mousemove",function(e){
         let x=e.layerX;
         let y=e.layerY;
@@ -71,12 +72,32 @@ for(let i=0;i<cards.childElementCount;i++){
         let string='perspective(500px) scale(1.02) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)';
         this.style.transform=string;
         this.style.border="2px solid white";
+        pers.innerHTML=cards.children[i].alt;
     });
     cards.children[i].addEventListener("mouseleave",function(){
         let string="perspective(0) scale(1) rotateX(0deg) rotateY(0deg)";
         this.style.transform=string;
         this.style.border="";
+        pers.innerHTML="Personajes";
     });
+}
+    //hover para las img del Calendar
+let imgsCal=document.querySelectorAll(".calImg");
+for(let i=0;i<imgsCal.length;i++){
+    for (let j=0;j<imgsCal[i].childElementCount;j++){
+        imgsCal[i].children[j].addEventListener("mousemove",function(e){
+            let x=e.layerX;
+            let y=e.layerY;
+            let yRotation = 25 * ((x - this.width / 2) / this.width)
+            let xRotation = -20 * ((y - this.height / 2) / this.height)
+            let string='perspective(500px) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)';
+            this.style.transform=string;
+        });
+        imgsCal[i].children[j].addEventListener("mouseleave",function(){
+            let string="perspective(0) rotateX(0deg) rotateY(0deg)";
+            this.style.transform=string;
+        });
+    }
 }
 
 
@@ -109,7 +130,7 @@ function loadPage(dest){//dest es el ID del elemento a saltar
 
 function scrollea(){
     let nivScroll=window.scrollY;
-    document.title=nivScroll;
+    //document.title=nivScroll;
     checkVisible(nivScroll);
     if (nivScroll<1000){
         animarPortada(nivScroll);
@@ -127,10 +148,11 @@ function scrollea(){
 }    
 //#region animacion_portada
 function animarPortada(scroll){
+    if (scroll<800)
+        portada.style.left=0;
     if (scroll<700){
         portada.removeEventListener("mousemove", animarKillBill);
         l8.style.animation="";
-        portada.style.left=0;
     }
     regresiva.style.visibility="hidden";
     portada.style.top=scroll+"px";
@@ -259,9 +281,13 @@ function animarCalendar(scroll){
 }
 
 function animarComents(scroll){
-    if (scroll<1900)
+    if (scroll<1900){
         comentarios.style.top=(-11*scroll)+22800+"px";
+        let giro=(9*scroll)-16200;
+        comentarios.style.transform=`rotateZ(${giro}deg)`;
+    }
     else{
+        comentarios.style.transform=`rotateZ(0deg)`;
         comentarios.style.top=scroll+25+"px";
     }
 }
@@ -269,51 +295,86 @@ function animarComents(scroll){
 function checkVisible(sy){
     if (sy<1000){//portada
         portada.style.opacity="1";
+        portada.style.display="block";
         cards.style.opacity="0";
+        cards.style.display="none";
         slider.style.opacity="0";
+        slider.style.display="none";
         calendar.style.opacity="0";
+        calendar.style.display="none";
         comentarios.style.opacity="0";
+        comentarios.style.display="none";
     }
     if (sy<1500&&sy>=1000){//cards
         portada.style.transition="opacity ease-out 1s";
         portada.style.opacity="0";
+        portada.style.display="none";
         cards.style.opacity="1";
+        cards.style.display="block";
         slider.style.opacity="0";
+        slider.style.display="none";
         calendar.style.opacity="0";
+        calendar.style.display="none";
         comentarios.style.opacity="0";
-        if (sy>1300)
+        comentarios.style.display="none";
+        if (sy>1300){
             slider.style.opacity="1";    
+            slider.style.display="block";
+        }
     }
     if (sy>=1500){//slider
-        slider.style.opacity="1";    
+        slider.style.opacity="1";
+        slider.style.display="block";
         portada.style.opacity="0";
+        portada.style.display="none";
         cards.style.opacity="0";
+        cards.style.display="none";
         calendar.style.opacity="0";
-        if (sy>1600)
+        calendar.style.display="none";
+        if (sy>1600){
             calendar.style.opacity="1";
+            calendar.style.display="block";
+        }
     }
     if (sy>=1700){//Calendar
         slider.style.opacity="0";    
+        slider.style.display="none";
         portada.style.opacity="0";
+        portada.style.display="none";
         cards.style.opacity="0";
+        cards.style.display="none";
         calendar.style.opacity="1";
+        calendar.style.display="block";
         comentarios.style.opacity="0";
-        if (sy>1800)
+        comentarios.style.display="none";
+        if (sy>1800){
             comentarios.style.opacity="1";
+            comentarios.style.display="block";
+        }
     }
     if (sy>=1900){//comments
         slider.style.opacity="0";    
+        slider.style.display="none";
         portada.style.opacity="0";
+        portada.style.display="none";
         cards.style.opacity="0";
+        cards.style.display="none";
         calendar.style.opacity="0";
+        calendar.style.display="none";
         comentarios.style.opacity="1";
+        comentarios.style.display="block";
     }
     if (sy>2040){
-        slider.style.opacity="0";    
+        slider.style.opacity="0";
+        slider.style.display="none";
         portada.style.opacity="0";
+        portada.style.display="none";
         cards.style.opacity="0";
+        cards.style.display="none";
         calendar.style.opacity="0";
+        calendar.style.display="none";
         comentarios.style.opacity="0";
+        comentarios.style.display="none";
     }
 }
 
