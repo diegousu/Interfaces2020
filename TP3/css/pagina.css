@@ -415,11 +415,16 @@ input[type=Email]:focus, input[type=text]:focus{
     width:100px;
     border-radius: 5px;
     left:40%;
-    transition: font-size .4s linear;
+    transition: background-color .4s linear;
     cursor: pointer;
 }
 
 #btnEnviar:hover{
     background-color: yellow;
     color:black;
+}
+
+.pagina>#comentarios>fieldset>.sentSucces{
+    position: absolute;
+    display:none;
 }
