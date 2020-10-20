@@ -18,6 +18,12 @@
     font-size: 500%;
 }
 
+.spinner>#resolucion{
+    position: absolute;
+    top:700px;
+    color:rgba(100, 100, 100, .8);
+    font-size: 120%;
+}
 .spinner>.blood{
     background-color: red;
     position: relative;
@@ -37,6 +43,7 @@
 }
 
 @keyframes caida{
-    0%{background-image: url("../img/blood/4.png");}
+    0%{background-image: url("../img/blood/3.png");}
+    50%{background-image: url("../img/blood/4.png");}
     100%{background-image: url("../img/blood/5.png");}
 }
