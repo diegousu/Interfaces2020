@@ -1,0 +1,44 @@
+nav{
+    position: fixed;
+    left:0;
+    top:0;
+    z-index: 5;
+    margin: 5px
+}
+nav>img{
+    opacity: .7;
+}
+
+nav>img:hover{
+    background-color: #fff8;
+    opacity:1;
+    border-radius: 5px;;
+}
+nav>.menu>.link{
+    color:yellow;
+    text-decoration: none;
+    display: block;
+    font-weight: bolder;
+    font-size: larger;
+    transition:color .2s linear;
+}
+
+.LessImportant{
+    margin-left: 10px;
+    color:yellow;
+    font-weight: lighter;
+    font-size: medium;
+    text-decoration: none;
+    display: block;
+}
+
+.menu:hover{
+    background-color:rgba(0, 0, 0, .7);
+    border-radius: 5px;
+}
+
+nav>.menu>a:hover{
+    color:red;
+    background-color: #FFF7;
+    border-radius: 5px;
+}

@@ -1,0 +1,42 @@
+.spinner{
+    position: absolute;
+    width: 80%;
+    height:80%;
+    left: 33%;
+    top:10%;
+    background-image: url("../img/Killkatana.jpg");
+    background-repeat: no-repeat;
+}
+
+.spinner>p{
+    color:#efbc01;
+    position: absolute;
+    top: 300px;
+    left: 25px;
+    font-family: sans-serif;
+    font-weight: bolder;
+    font-size: 500%;
+}
+
+.spinner>.blood{
+    background-color: red;
+    position: relative;
+    width: 433px;
+    top:678px;
+}
+
+.spinner>.chorro{
+    position: absolute;
+    width: 433px;
+    height:678px;
+    animation:caida .5s linear infinite;
+}
+@keyframes fillPool{
+    from{height:0px;}
+    to{height:600px;top:90px;}
+}
+
+@keyframes caida{
+    0%{background-image: url("../img/blood/4.png");}
+    100%{background-image: url("../img/blood/5.png");}
+}
