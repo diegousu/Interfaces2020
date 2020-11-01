@@ -9,8 +9,8 @@ let comentarios=document.querySelector("#comentarios");
 document.querySelector("#menu").addEventListener("click", function(){
     document.querySelector(".menu").classList.toggle("oculto");
     });
-setSpinner(3000,"portada");
-setInterval(countDown,1000);
+setSpinner(200,"portada");
+setInterval(countDown,200);
 
 function countDown(){
     let actual=new Date();
@@ -50,11 +50,11 @@ let cLay3=document.querySelector("#Clayer3");
 
 
 //listeners
-document.querySelector("#link1").addEventListener("click", function(){setSpinner(3000, "portada")});
-document.querySelector("#link2").addEventListener("click", function(){setSpinner(3000, "cards")});
-document.querySelector("#link3").addEventListener("click", function(){setSpinner(3000, "slider")});
-document.querySelector("#link4").addEventListener("click", function(){setSpinner(3000, "calendar")});
-document.querySelector("#link5").addEventListener("click", function(){setSpinner(3000, "comentarios")});
+document.querySelector("#link1").addEventListener("click", function(){setSpinner(100, "portada")});
+document.querySelector("#link2").addEventListener("click", function(){setSpinner(100, "cards")});
+document.querySelector("#link3").addEventListener("click", function(){setSpinner(100, "slider")});
+document.querySelector("#link4").addEventListener("click", function(){setSpinner(100, "calendar")});
+document.querySelector("#link5").addEventListener("click", function(){setSpinner(100, "comentarios")});
 
 document.querySelector("#next").addEventListener("click", function(){moverCarrusel(1)});
 document.querySelector("#prev").addEventListener("click", function(){moverCarrusel(-1)});
@@ -115,8 +115,8 @@ function setSpinner(time, dest){
 function loadPage(dest){//dest es el ID del elemento a saltar
     document.querySelector(".spinner").classList.add("oculto");
     page.classList.remove("oculto");
-    document.addEventListener("scroll", scrollea);
-    let nivScroll=0;
+    document.addEventListener("wheel", scrollea);
+    nivScroll=0;
     if (dest=="cards")
         nivScroll=1101;
     if (dest=="slider")
@@ -125,13 +125,37 @@ function loadPage(dest){//dest es el ID del elemento a saltar
         nivScroll=1700;
     if (dest=="comentarios")
         nivScroll=1900;
-    window.scrollTo(0,nivScroll);
-    scrollea();
+        window.scrollTo(0,nivScroll);
+        checkVisible(nivScroll);
+        if (nivScroll<1000){
+            animarPortada(nivScroll);
+            return;
+        }
+        if (nivScroll<1500){
+            animarcards(nivScroll);
+        }
+        if (nivScroll>1300)
+            animarSlider(nivScroll);
+        if (nivScroll>1500)
+            animarCalendar(nivScroll);
+        if (nivScroll>1800)
+            animarComents(nivScroll);
 }
 
-function scrollea(){
-    let nivScroll=window.scrollY;
-    //document.title=nivScroll;
+let nivScroll=0;
+function scrollea(e){
+    let cant=102;
+    if(nivScroll>=1000 && nivScroll<1100)
+        cant=102;
+    if (nivScroll>=750)
+        cant=20;
+    if (e.deltaY>0)
+        nivScroll+=cant;
+    else
+        nivScroll-=cant;
+    if (nivScroll<0)
+        nivScroll=0;
+    window.scrollTo(0,nivScroll);
     checkVisible(nivScroll);
     if (nivScroll<1000){
         animarPortada(nivScroll);
@@ -174,6 +198,7 @@ function animarPortada(scroll){
             l6b.style.visibility="hidden";
             l6c.style.visibility="hidden";
             l7.style.opacity=1;
+            l7.style.top="calc(80vw/3.3)";
             l7.style.backgroundSize="100%";
             l7.style.left=0;
         }
@@ -183,7 +208,7 @@ function animarPortada(scroll){
         if (scroll>300&&scroll<500){//Avanzan
             l7.style.opacity=1;
             l7.style.backgroundSize="20%";
-            l7.style.top="60%";
+            l7.style.top="calc(80vw/2.35)";
             l7.style.left="40%";
             if (scroll>400){
                 l7.style.opacity=0;
@@ -234,18 +259,17 @@ function animarPortada(scroll){
 }
 
 function animarKillBill(e){
+    let ancho=window.innerWidth;
     l6d.style.visibility="hidden";
     l6d.style.opacity="0";
-    let posx=((e.clientX-portada.offsetLeft)*0.012);let posy=e.clientY*0.05-20;
+    let posx=((100/(ancho*0.9)) * e.offsetX)*0.2;
     l8.style.transform="translateY("+posx*(-1)+"px)";
     l9.style.transform="translateY("+posx+"px)";
     if (posx>12){
         l8.style.animation="bloodyKill 1s infinite";
-        l8.style.height="650px";
     }
     else{
         l8.style.animation="";
-        l8.style.height="300px";
     }
 }
 //#endregion animacion_portada
@@ -307,7 +331,7 @@ function animarForm(){
     setTimeout(function(){
         let enviado=document.querySelector(".sentSucces");
         enviado.style.display="block";
-        enviado.style.marginLeft="33%";
+        enviado.style.marginLeft="25%";
         enviado.style.top="25%";
     }, 500);
 }
