@@ -9,7 +9,7 @@ let comentarios=document.querySelector("#comentarios");
 document.querySelector("#menu").addEventListener("click", function(){
     document.querySelector(".menu").classList.toggle("oculto");
     });
-setSpinner(200,"portada");
+setSpinner(3000,"portada");
 setInterval(countDown,200);
 
 function countDown(){
@@ -50,11 +50,11 @@ let cLay3=document.querySelector("#Clayer3");
 
 
 //listeners
-document.querySelector("#link1").addEventListener("click", function(){setSpinner(100, "portada")});
-document.querySelector("#link2").addEventListener("click", function(){setSpinner(100, "cards")});
-document.querySelector("#link3").addEventListener("click", function(){setSpinner(100, "slider")});
-document.querySelector("#link4").addEventListener("click", function(){setSpinner(100, "calendar")});
-document.querySelector("#link5").addEventListener("click", function(){setSpinner(100, "comentarios")});
+document.querySelector("#link1").addEventListener("click", function(){setSpinner(1000, "portada")});
+document.querySelector("#link2").addEventListener("click", function(){setSpinner(1000, "cards")});
+document.querySelector("#link3").addEventListener("click", function(){setSpinner(1000, "slider")});
+document.querySelector("#link4").addEventListener("click", function(){setSpinner(1000, "calendar")});
+document.querySelector("#link5").addEventListener("click", function(){setSpinner(1000, "comentarios")});
 
 document.querySelector("#next").addEventListener("click", function(){moverCarrusel(1)});
 document.querySelector("#prev").addEventListener("click", function(){moverCarrusel(-1)});
