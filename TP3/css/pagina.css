@@ -5,23 +5,21 @@
 }
 
 #portada{
-    /* border:1px solid yellow; */
     text-align: center;
-    margin-left: 20%;
+    margin-left: calc(5vw);
     margin-top: 0;
     position: relative;
     top:0;
     min-height: 80vh;
-    padding-left: 12%;
-    width: 50vw;
+    width: 90vw;
     overflow: hidden;
-    height:800px;
+    height:calc(80vw/1.3);
     background-color: black;
     transition: background-color 1s linear;
 }
 
 #portada * {
-    height:800px;
+    height:calc(80vw/1.3);
     top:0;
     position: absolute;
     left:0;
@@ -84,29 +82,28 @@
 #portada>#layer6{
     background-image: url("../img/anima/tumbleweed.png");
     background-size:100%;
-    top: 60vh;
+    top: calc(80vw/1.6);
     opacity:1;
     left:-200px;
     background-repeat: no-repeat;
     width: 100px;
     height: 100px;
-    animation:tumble 15s ease-out infinite;
+    animation:tumble 15s linear infinite;
 }
 @keyframes tumble{
-    0%{left:-500px;}
-    25%{top:73vh}
-    50%{top:70vh}
-    75%{top:73vh}
+    0%{left:-500px;
+        top: calc(80vw/1.6);}
+    50%{top:calc(80vw/1.6)}
+    75%{top:calc(80vw/1.8);}
     100%{left:1200px;
         transform: rotate(540deg);
-        top:70vh;}
+        top:calc(80vw/1.6);
+        }
 }
 
 #portada>#layer6b{
     background-image: url("../img/mouse.png");
     background-size:150px;
-    top:600px;
-    left:1000px;
     background-repeat: no-repeat;
     width: 100%;
     opacity:.7;
@@ -115,24 +112,20 @@
 #portada>#layer6c{
     background-image: url("../img/mousewheel.png");
     background-size:150px;
-    top:600px;
-    left:1000px;
     background-repeat: no-repeat;
     width: 100%;
     opacity:.7;
     animation: ruedita 1.5s infinite ease-out;
 }
 @keyframes ruedita{
-    0%{top:600px;}
-    50%{top:610px;}
-    100%{top:600px;}
+    0%{top:0;}
+    50%{top:10px;}
+    100%{top:0px;}
 }
 
 #portada>#layer6d{
     background-image: url("../img/mousemove/mouse1.png");
     background-size:150px;
-    top:600px;
-    left:1000px;
     background-repeat: no-repeat;
     width: 100%;
     visibility: hidden;
@@ -153,7 +146,7 @@
     background-size:30%;
     background-repeat: no-repeat;
     width: 100%;
-    top:50%;
+    top:calc(80vw/3.3);
     left:35%;
     opacity:0;
     transform-origin: 50vw 50vh;
@@ -165,8 +158,8 @@
     background-size:100%;
     background-repeat: no-repeat;
     width: 100%;
-    height:300px;
-    top:200px;
+    height:100%;
+    top:calc(80vw/4.67);
     opacity:0;
     /* transition: transform .5s linear; */
 }
@@ -185,16 +178,15 @@
     background-size:100%;
     background-repeat: no-repeat;
     width: 100%;
-    height:300px;
-    top:198px;
+    height:100%;
+    top:calc(80vw/4.69);
     opacity:0;
 }
 
 #portada>#countdown{
-    top:700px;
-    left: 10%;
+    left: calc(8vw);
     text-align: center;
-    font-size: 50px;
+    font-size: calc(4.4vw);
     animation: cuentareg 2s linear infinite;
     visibility: visible;
     perspective: 500px;
@@ -202,7 +194,7 @@
 @keyframes cuentareg{
     0%{color: yellow;
         transform: rotateY(20deg);}
-    50%{color:red;
+    50%{color:purple;
         transform: rotateY(0deg)}
     100%{color: yellow;
         transform: rotateY(-20deg)}
@@ -211,15 +203,15 @@
 .pagina>#cards{
     position: absolute;
     top:2800px;
-    width: calc(90vw);
+    width: calc(100vw);
     text-align: center;
-    height: 600px;
+    height: calc(90vh);
     transition: opacity 1s linear;
-    left: 5%;
 }
 
 .pagina>#cards>img{
     margin-right: "10px";
+    width: calc(calc(90vw)/5);
     filter: sepia(100%) contrast(80%);
     transition: filter .2s ease-out;
     transition: transform .1s;
@@ -236,23 +228,26 @@
     position: absolute;
     top:2500px;
     text-align: center;
-    height: 800px;
-    width: calc(90vw);
-    margin-left: 5%;
-    margin-right: 5%;
+    height: calc(90vh);
+    width: calc(94vw);
+    margin-left: calc(5vw);
     overflow: hidden;
 }
 
-.pagina>#slider>#prev, #next{
+.pagina>#slider>#next, #prev{
     position: relative;
     background-size: cover;
     opacity: .5;
-    top:650px;
-    height: 100px;
-    width: 100px;
+    top:calc(2vh);
+    height: calc(12vh);
+    width: calc(12vh);
+    z-index: 2;
 }
 
-.pagina>#slider>#prev:hover,#next:hover{
+.pagina>#slider>#prev:hover{
+    opacity: 1;
+}
+.pagina>#slider>#next:hover{
     opacity: 1;
 }
 
@@ -261,8 +256,8 @@
     background-image: url("../img/carrusel/prev.png");
 }
 .pagina>#slider>#next{
-    top:550px;
     left:calc(82vw);
+    top:calc(-10vh);
     background-image: url("../img/carrusel/next.png");
 }
 
@@ -272,23 +267,26 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position-y: 50%;
-    height: 800px;
-    width:800px;
+    height: calc(96vh);
     transition:transform .5s linear;
 }
-.pagina>#slider>#Clayer2{
-    left:26%;
-    background-image: url("../img/carrusel/1.jpg");
-}
 .pagina>#slider>#Clayer1{
-    left: -14%;
-    transform: perspective(600px) scale(0.6) rotateY(-28deg);
+    left: calc(-19vw);
+    width:47vw;
+    transform: perspective(calc(41vw)) scale(0.5) rotateY(-66deg);
     background-image: url("../img/carrusel/6.jpg");  
 }
 
+.pagina>#slider>#Clayer2{
+    left:calc(15vw);
+    width:calc(60vw);
+    background-image: url("../img/carrusel/1.jpg");
+}
+
 .pagina>#slider>#Clayer3{
-    left:66.1%;
-    transform: perspective(600px) scale(.6) rotateY(28deg);
+    left:calc(62vw);
+    width:47vw;
+    transform: perspective(calc(41vw)) scale(0.5) rotateY(66deg);
     background-image: url("../img/carrusel/2.jpg");   
 }
 
@@ -362,9 +360,8 @@ details > summary::-webkit-details-marker {
     top:3500px;
     text-align: center;
     height: 600px;
-    width: 800px;
-    margin-left: 25%;
-    margin-right: 25%;
+    width: 600px;
+    margin-left: calc(25vw);
     overflow: hidden;
 }
 input[type=text], input[type=Email], textarea, label, legend{
