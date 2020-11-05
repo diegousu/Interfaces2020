@@ -144,6 +144,7 @@ function loadPage(dest){//dest es el ID del elemento a saltar
 
 let nivScroll=0;
 function scrollea(e){
+    e.preventDefault();
     let cant=102;
     if(nivScroll>=1000 && nivScroll<1100)
         cant=102;
